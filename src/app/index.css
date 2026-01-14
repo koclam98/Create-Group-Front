@@ -1,0 +1,62 @@
+:root {
+  /* 4-Color Palette (Light Theme) */
+  --c-bg: #F1F5F9;      /* Light Slate Background */
+  --c-surface: #FFFFFF; /* White Surface */
+  --c-accent: #0284C7;  /* Deep Sky Blue Accent (Darker for contrast) */
+  --c-text: #0F172A;    /* Deep Navy Text */
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: var(--c-text);
+  background-color: var(--c-bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: var(--c-accent);
+  text-decoration: inherit;
+}
+a:hover {
+  filter: brightness(1.2);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--c-bg);
+  color: var(--c-text);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  color: var(--c-text);
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: var(--c-surface);
+  color: var(--c-accent);
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: var(--c-accent);
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
