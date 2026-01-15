@@ -12,16 +12,13 @@ export default function DtlPage() {
 
     useEffect(() => {
         const fetchParticipant = async () => {
-            console.log('Fetching participant for ID:', id);
             if (!id) {
-                console.warn('No ID provided');
                 setLoading(false);
                 return;
             }
             try {
                 setLoading(true);
                 const data = await ParticipantService.getById(id);
-                console.log('Fetched participant:', data);
                 setParticipant(data);
             } catch (err) {
                 console.error('Failed to fetch participant:', err);
@@ -53,84 +50,118 @@ export default function DtlPage() {
         );
     }
 
+    // Reuse styles from AddPage inline or consistent approach
+    const inputStyle = {
+        flex: 1,
+        padding: '0.5rem',
+        fontSize: '1rem',
+        borderRadius: '4px',
+        border: '1px solid #ccc',
+        backgroundColor: '#f8f9fa', // Read-only look
+        color: '#333',
+    };
+
+    const labelStyle = {
+        width: '80px',
+        textAlign: 'right' as const,
+        fontWeight: 'bold',
+    };
+
     return (
         <main className="main-content">
+            <h1 style={{ marginBottom: '2rem' }}>참여자 상세</h1>
+
             <div
                 style={{
                     width: '100%',
-                    maxWidth: '600px',
-                    backgroundColor: 'white',
-                    padding: '2rem',
-                    borderRadius: '8px',
-                    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    maxWidth: '500px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
                 }}
             >
-                <h1 style={{ textAlign: 'center', marginBottom: '2rem', color: '#333' }}>참여자 상세 정보</h1>
-
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
-                    {participant.profile?.imageUrl ? (
-                        <img
-                            src={participant.profile.imageUrl}
-                            alt={participant.name}
-                            style={{
-                                width: '150px',
-                                height: '150px',
-                                borderRadius: '50%',
-                                objectFit: 'cover',
-                                border: '4px solid #f0f0f0',
-                                marginBottom: '1rem',
-                            }}
-                        />
-                    ) : (
-                        <div
-                            style={{
-                                width: '150px',
-                                height: '150px',
-                                borderRadius: '50%',
-                                backgroundColor: '#eee',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                color: '#888',
-                                fontSize: '1.2rem',
-                                marginBottom: '1rem',
-                            }}
-                        >
-                            No Image
-                        </div>
-                    )}
-                    <h2 style={{ margin: 0, color: '#333' }}>{participant.name}</h2>
-                    <p style={{ color: '#666', marginTop: '0.5rem' }}>{participant.season}기</p>
+                <div
+                    className="form-group"
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        marginBottom: '1.5rem',
+                    }}
+                >
+                    <label style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>프로필 이미지</label>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        {participant.profile?.imageUrl ? (
+                            <img
+                                src={participant.profile.imageUrl}
+                                alt={participant.name}
+                                style={{
+                                    width: '120px',
+                                    height: '120px',
+                                    borderRadius: '50%',
+                                    objectFit: 'cover',
+                                    marginBottom: '1rem',
+                                    border: '2px solid #ddd',
+                                }}
+                            />
+                        ) : (
+                            <div
+                                style={{
+                                    width: '120px',
+                                    height: '120px',
+                                    borderRadius: '50%',
+                                    backgroundColor: '#eee',
+                                    marginBottom: '1rem',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    color: '#888',
+                                }}
+                            >
+                                No Image
+                            </div>
+                        )}
+                    </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                    <div style={{ display: 'flex', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
-                        <span style={{ width: '100px', fontWeight: 'bold', color: '#555' }}>연락처</span>
-                        <span style={{ color: '#333' }}>{participant.phone}</span>
-                    </div>
-                    <div style={{ display: 'flex', borderBottom: '1px solid #eee', paddingBottom: '0.5rem' }}>
-                        <span style={{ width: '100px', fontWeight: 'bold', color: '#555' }}>등록일</span>
-                        <span style={{ color: '#333' }}>{new Date(participant.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    {/* 필요한 경우 추가 정보 표시 */}
+                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label style={labelStyle}>이름 :</label>
+                    <input type="text" value={participant.name} readOnly style={inputStyle} />
                 </div>
 
-                <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center' }}>
+                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label style={labelStyle}>기수 :</label>
+                    <input type="text" value={`${participant.season}기`} readOnly style={inputStyle} />
+                </div>
+
+                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label style={labelStyle}>연락처 :</label>
+                    <input type="text" value={participant.phone} readOnly style={inputStyle} />
+                </div>
+
+                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label style={labelStyle}>등록일 :</label>
+                    <input
+                        type="text"
+                        value={new Date(participant.createdAt).toLocaleDateString()}
+                        readOnly
+                        style={inputStyle}
+                    />
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
                     <button
                         onClick={() => navigate('/list')}
                         style={{
-                            padding: '0.8rem 2rem',
+                            flex: 1,
                             backgroundColor: '#6c757d',
                             color: 'white',
                             border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            fontSize: '1rem',
                         }}
                     >
                         목록으로
                     </button>
-                    {/* 수정/삭제 버튼 추가 가능 위치 */}
+                    {/* Add Edit/Delete buttons if needed here */}
                 </div>
             </div>
         </main>
