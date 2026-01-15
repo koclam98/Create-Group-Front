@@ -2,15 +2,20 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import ListPage from '../pages/ListPage';
 import AddPage from '../pages/AddPage';
+import DtlPage from '../pages/DtlPage';
+import Layout from '../components/layout/Layout';
 import './App.css';
 
 function App() {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/list" element={<ListPage />} />
-                <Route path="/add" element={<AddPage />} />
+                <Route element={<Layout />}>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/list" element={<ListPage />} />
+                    <Route path="/add" element={<AddPage />} />
+                    <Route path="/dtl/:id" element={<DtlPage />} />
+                </Route>
             </Routes>
         </BrowserRouter>
     );

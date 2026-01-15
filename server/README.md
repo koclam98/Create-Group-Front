@@ -1,61 +1,128 @@
-# Backend Server (NestJS + Prisma + SQLite)
+# Meeting Server (Spring Boot)
 
-이 프로젝트는 `NestJS`, `Prisma`, `SQLite`를 사용하여 구축된 백엔드 서버입니다.
-별도의 DB 설치 없이 로컬 파일(`prisma/dev.db`)을 데이터베이스로 사용하므로 이동성이 뛰어납니다.
+모임 관리 서버 - Spring Boot + JPA + H2
 
-## 🚀 시작하기 (Getting Started)
+## 기술 스택
 
-### 1. 설치 (Installation)
+- Java 17
+- Spring Boot 3.2.1
+- Spring Data JPA
+- H2 Database
+- Lombok
+- Gradle
 
-프로젝트 의존성을 설치합니다.
+## 실행 방법
 
-```bash
-cd server
-npm install
-```
-
-### 2. 패키지 실행 (Running the app)
-
-**개발 모드 실행 (추천)**
+### 1. Gradle로 실행
 
 ```bash
-npm run start:dev
+# Windows
+gradlew.bat bootRun
+
+# Mac/Linux
+./gradlew bootRun
 ```
 
-서버는 기본적으로 `http://localhost:3000`에서 실행됩니다.
-
-### 3. 데이터베이스 설정 (Database Setup)
-
-이 프로젝트는 **SQLite**를 사용합니다. 별도의 설치가 필요 없으며, `prisma/dev.db` 파일이 데이터베이스 자체입니다.
-
-**최초 실행 시 또는 스키마 변경 시:**
+### 2. 빌드 후 실행
 
 ```bash
-# DB 파일 생성 및 테이블 구조 반영
-npx prisma migrate dev --name init
+# 빌드
+gradlew.bat build
+
+# 실행
+java -jar build/libs/meeting-0.0.1-SNAPSHOT.jar
 ```
 
-**Prisma Studio 실행 (DB 데이터 확인용 GUI):**
+## 서버 정보
 
-```bash
-npx prisma studio
+- 서버 포트: `http://localhost:3000`
+- H2 콘솔: `http://localhost:3000/h2-console`
+  - JDBC URL: `jdbc:h2:file:./data/meeting`
+  - Username: `sa`
+  - Password: (비어있음)
+
+## API 엔드포인트
+
+### Participants (참여자)
+
+- `GET /participants` - 모든 참여자 조회
+- `GET /participants/{id}` - 특정 참여자 조회
+- `POST /participants` - 참여자 생성
+- `PATCH /participants/{id}` - 참여자 수정
+- `DELETE /participants/{id}` - 참여자 삭제
+
+### Profiles (프로필)
+
+- `POST /profiles` - 프로필 생성
+- `GET /profiles/participant/{participantId}` - 참여자의 프로필 조회
+- `PATCH /profiles/participant/{participantId}` - 프로필 수정
+- `DELETE /profiles/participant/{participantId}` - 프로필 삭제
+
+### Meetings (모임)
+
+- `GET /meetings` - 모든 모임 조회
+- `GET /meetings/{id}` - 특정 모임 조회
+- `GET /meetings/host/{hostId}` - 특정 호스트의 모임 조회
+- `POST /meetings` - 모임 생성
+- `PATCH /meetings/{id}` - 모임 수정
+- `DELETE /meetings/{id}` - 모임 삭제
+
+## 프로젝트 구조
+
+```
+src/main/java/com/example/meeting/
+├── MeetingApplication.java          # 메인 애플리케이션
+├── config/
+│   └── WebConfig.java              # CORS 설정
+├── domain/
+│   ├── Participant.java            # 참여자 엔티티
+│   ├── Profile.java                # 프로필 엔티티
+│   └── Meeting.java                # 모임 엔티티
+├── repository/
+│   ├── ParticipantRepository.java
+│   ├── ProfileRepository.java
+│   └── MeetingRepository.java
+├── dto/
+│   ├── ParticipantDto.java
+│   ├── ProfileDto.java
+│   └── MeetingDto.java
+├── service/
+│   ├── ParticipantService.java
+│   ├── ProfileService.java
+│   └── MeetingService.java
+└── controller/
+    ├── ParticipantController.java
+    ├── ProfileController.java
+    └── MeetingController.java
 ```
 
-브라우저에서 `http://localhost:5555`로 접속하여 데이터를 시각적으로 관리할 수 있습니다.
+## 데이터베이스 스키마
 
----
+### Participant (참여자)
+- id: String (UUID, PK)
+- name: String
+- season: String
+- phone: String (Unique)
+- createdAt: LocalDateTime
+- updatedAt: LocalDateTime
 
-## 📂 프로젝트 구조 (Project Structure)
+### Profile (프로필)
+- id: String (UUID, PK)
+- imageUrl: String (Text)
+- participantId: String (FK, Unique)
 
-- `src/`: NestJS 소스 코드
-- `prisma/schema.prisma`: 데이터베이스 모델 정의
-- `prisma/dev.db`: **실제 데이터가 저장되는 파일 (삭제 주의)**
+### Meeting (모임)
+- id: String (UUID, PK)
+- title: String
+- desc: String (Text)
+- date: LocalDateTime
+- location: String
+- hostId: String (FK)
+- createdAt: LocalDateTime
+- updatedAt: LocalDateTime
 
----
+## 주의사항
 
-## 🚚 프로젝트 이동 시 주의사항 (Portability)
-
-다른 PC로 프로젝트를 옮길 때는 `server` 폴더를 통째로 복사하면 됩니다.
-단, `node_modules` 폴더는 복사하지 말고 새 PC에서 `npm install`을 수행하는 것이 좋습니다.
-
-**중요**: `prisma/dev.db` 파일이 함께 이동되어야 기존 데이터가 유지됩니다. 만약 데이터를 초기화하고 싶다면 이 파일을 삭제하고 `npx prisma migrate dev`를 다시 실행하면 됩니다.
+- H2 데이터베이스는 파일 기반으로 `./data/meeting.mv.db`에 저장됩니다
+- 첫 실행 시 테이블이 자동으로 생성됩니다 (ddl-auto: update)
+- CORS는 `http://localhost:5173` (Vite 기본 포트)만 허용됩니다
