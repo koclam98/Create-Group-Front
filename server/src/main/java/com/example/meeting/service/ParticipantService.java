@@ -1,5 +1,6 @@
 package com.example.meeting.service;
 
+import com.example.meeting.domain.Meeting;
 import com.example.meeting.domain.Participant;
 import com.example.meeting.dto.ParticipantDto;
 import com.example.meeting.exception.DuplicateResourceException;
@@ -57,7 +58,13 @@ public class ParticipantService {
 
     @Transactional
     public void delete(String id) {
-        getParticipantById(id);
+        Participant participant = getParticipantById(id);
+
+        // 참여자가 속한 모든 모임에서 제거
+        for (Meeting meeting : participant.getMeetings()) {
+            meeting.getParticipants().remove(participant);
+        }
+
         participantRepository.deleteById(id);
     }
 

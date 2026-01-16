@@ -8,5 +8,4 @@ import java.util.List;
 
 @Repository
 public interface MeetingRepository extends JpaRepository<Meeting, String> {
-    List<Meeting> findByHostIdOrderByDateAsc(String hostId);
 }

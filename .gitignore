@@ -120,3 +120,8 @@ dist
 dist/
 dist-ssr/
 *.local
+
+# H2 Database files
+data/
+*.mv.db
+*.trace.db

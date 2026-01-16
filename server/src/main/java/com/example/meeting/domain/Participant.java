@@ -34,10 +34,6 @@ public class Participant {
     @OneToOne(mappedBy = "participant", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Profile profile;
 
-    @OneToMany(mappedBy = "host", fetch = FetchType.LAZY)
-    @Builder.Default
-    private List<Meeting> hostedMeetings = new ArrayList<>();
-
     @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Meeting> meetings = new ArrayList<>();

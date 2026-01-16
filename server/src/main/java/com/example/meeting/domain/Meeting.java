@@ -34,10 +34,6 @@ public class Meeting {
     @Column(nullable = false)
     private String location;
 
-    @ManyToOne
-    @JoinColumn(name = "host_id")
-    private Participant host;
-
     @CreationTimestamp
     @Column(updatable = false)
     private LocalDateTime createdAt;

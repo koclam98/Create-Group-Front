@@ -7,7 +7,6 @@ export interface Meeting {
     desc: string;
     date: string;
     location: string;
-    host: Participant;
     participants: Participant[];
     createdAt: string;
     updatedAt: string;
@@ -18,7 +17,6 @@ export interface CreateMeetingDto {
     desc: string;
     date: string;
     location: string;
-    hostId: string;
     participantIds: string[];
 }
 
@@ -32,12 +30,6 @@ export const meetingService = {
     // 특정 모임 조회
     getById: async (id: string) => {
         const response = await api.get<Meeting>(`/meetings/${id}`);
-        return response.data;
-    },
-
-    // 특정 호스트의 모임 조회
-    getByHost: async (hostId: string) => {
-        const response = await api.get<Meeting[]>(`/meetings/host/${hostId}`);
         return response.data;
     },
 

@@ -28,16 +28,17 @@ export default function ListPage() {
             return;
         }
 
-        try {
-            // 임시 hostId (첫 번째 참여자 또는 임의의 ID)
-            const hostId = participants.length > 0 ? participants[0].id : 'temp-host-id';
+        if (selectedIds.length === 0) {
+            alert('참여자를 선택해주세요.');
+            return;
+        }
 
+        try {
             await meetingService.create({
                 title: meetingName,
                 desc: '환영합니다.', // 기본값
                 date: new Date().toISOString(), // 현재 시간
                 location: '서울', // 기본값
-                hostId: hostId,
                 participantIds: selectedIds,
             });
 

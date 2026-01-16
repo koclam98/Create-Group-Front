@@ -23,13 +23,10 @@ public class MeetingDto {
         private String desc;
 
         @NotNull(message = "일시는 필수입니다")
-        private String date;  // String으로 변경
+        private String date;
 
         @NotBlank(message = "장소는 필수입니다")
         private String location;
-
-        @NotBlank(message = "개설자 ID는 필수입니다")
-        private String hostId;
 
         private List<String> participantIds;
     }
@@ -56,7 +53,6 @@ public class MeetingDto {
         private String desc;
         private LocalDateTime date;
         private String location;
-        private ParticipantDto.Response host;
         private List<ParticipantDto.Response> participants;
         private LocalDateTime createdAt;
         private LocalDateTime updatedAt;
@@ -68,7 +64,6 @@ public class MeetingDto {
                     .desc(meeting.getDesc())
                     .date(meeting.getDate())
                     .location(meeting.getLocation())
-                    .host(ParticipantDto.Response.from(meeting.getHost()))
                     .participants(meeting.getParticipants().stream()
                             .map(ParticipantDto.Response::from)
                             .collect(Collectors.toList()))

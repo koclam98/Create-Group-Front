@@ -34,15 +34,8 @@ public class MeetingService {
         return MeetingDto.Response.from(meeting);
     }
 
-    public List<MeetingDto.Response> findByHost(String hostId) {
-        return meetingRepository.findByHostIdOrderByDateAsc(hostId).stream()
-                .map(MeetingDto.Response::from)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public MeetingDto.Response create(MeetingDto.Create dto) {
-        Participant host = getParticipantById(dto.getHostId());
         List<Participant> participants = getParticipantsByIds(dto.getParticipantIds());
 
         Meeting meeting = Meeting.builder()
@@ -50,7 +43,6 @@ public class MeetingService {
                 .desc(dto.getDesc())
                 .date(DateTimeUtil.parseIsoString(dto.getDate()))
                 .location(dto.getLocation())
-                .host(host)
                 .participants(participants)
                 .build();
 
@@ -80,11 +72,6 @@ public class MeetingService {
     private Meeting getMeetingById(String id) {
         return meetingRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("모임을 찾을 수 없습니다."));
-    }
-
-    private Participant getParticipantById(String id) {
-        return participantRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("개설자를 찾을 수 없습니다."));
     }
 
     private List<Participant> getParticipantsByIds(List<String> ids) {
