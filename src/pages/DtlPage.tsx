@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ParticipantService, type Participant } from '../services/participantService';
+import { profileService } from '../services/profileService';
 import '../app/App.css';
 
 export default function DtlPage() {
@@ -15,6 +16,8 @@ export default function DtlPage() {
         season: '',
         phone: '',
     });
+    const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
+    const [preview, setPreview] = useState<string | undefined>(undefined);
 
     useEffect(() => {
         const fetchParticipant = async () => {
@@ -31,6 +34,9 @@ export default function DtlPage() {
                     season: data.season,
                     phone: data.phone,
                 });
+                if (data.profile?.imageUrl) {
+                    setPreview(data.profile.imageUrl);
+                }
             } catch (err) {
                 console.error('Failed to fetch participant:', err);
                 setError('참여자 정보를 불러오는데 실패했습니다.');
@@ -50,10 +56,32 @@ export default function DtlPage() {
         }));
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                const base64String = reader.result as string;
+                setProfileImage(base64String);
+                setPreview(base64String);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleUpdate = async () => {
-        if (!id) return;
+        if (!id || !participant) return;
         try {
             await ParticipantService.update(id, formData);
+
+            if (profileImage) {
+                if (participant.profile) {
+                    await profileService.update(id, { imageUrl: profileImage });
+                } else {
+                    await profileService.create({ imageUrl: profileImage, participantId: id });
+                }
+            }
+
             alert('수정되었습니다.');
             const updated = await ParticipantService.getById(id);
             setParticipant(updated);
@@ -124,9 +152,9 @@ export default function DtlPage() {
                 >
                     <label style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>프로필 이미지</label>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                        {participant.profile?.imageUrl ? (
+                        {preview ? (
                             <img
-                                src={participant.profile.imageUrl}
+                                src={preview}
                                 alt={participant.name}
                                 style={{
                                     width: '120px',
@@ -154,6 +182,12 @@ export default function DtlPage() {
                                 No Image
                             </div>
                         )}
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            style={{ marginLeft: '2rem' }}
+                        />
                     </div>
                 </div>
 
