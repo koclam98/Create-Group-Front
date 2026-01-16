@@ -91,9 +91,7 @@ export default function ListPage() {
     };
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태 추가
-    const ITEMS_PER_PAGE = 5;
 
     // 검색 필터링 (이름 또는 기수)
     const filteredParticipants = participants.filter((p) => {
@@ -101,14 +99,7 @@ export default function ListPage() {
         return p.name.toLowerCase().includes(lowerTerm) || p.season.toLowerCase().includes(lowerTerm);
     });
 
-    const totalPages = Math.ceil(filteredParticipants.length / ITEMS_PER_PAGE);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const currentData = filteredParticipants.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
-    // 검색어 변경 시 페이지 초기화
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [searchTerm]);
+    const isAllSelected = filteredParticipants.length > 0 && selectedIds.length === filteredParticipants.length;
 
     const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.checked) {
@@ -125,8 +116,6 @@ export default function ListPage() {
             setSelectedIds([...selectedIds, id]);
         }
     };
-
-    const isAllSelected = filteredParticipants.length > 0 && selectedIds.length === filteredParticipants.length;
 
     // 컬럼 정의 (체크박스 사이즈 확대)
     const columns = [
@@ -186,12 +175,6 @@ export default function ListPage() {
         { header: '기수', accessor: 'season' as keyof Participant, width: 100 },
         { header: '연락처', accessor: 'phone' as keyof Participant, width: 100 },
     ];
-
-    const handlePageChange = (newPage: number) => {
-        if (newPage >= 1 && newPage <= totalPages) {
-            setCurrentPage(newPage);
-        }
-    };
 
     // 로딩 중
     if (loading) {
@@ -294,37 +277,14 @@ export default function ListPage() {
                     </button>
                 </div>
             ) : (
-                <div style={{ width: '100%', maxWidth: '800px' }}>
-                    <Table columns={columns} data={currentData} />
-
-                    <div
-                        style={{
-                            marginTop: '1rem',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            gap: '1rem',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            style={{ padding: '0.5rem 1rem' }}
-                        >
-                            이전
-                        </button>
-                        <span>
-                            {currentPage} / {totalPages || 1}
-                        </span>
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages || totalPages === 0}
-                            style={{ padding: '0.5rem 1rem' }}
-                        >
-                            다음
-                        </button>
-                    </div>
-                </div>
+                <Table
+                    columns={columns}
+                    data={filteredParticipants}
+                    containerStyle={{
+                        width: '90%',
+                        maxWidth: '800px',
+                    }}
+                />
             )}
 
             {/* 모달 UI */}

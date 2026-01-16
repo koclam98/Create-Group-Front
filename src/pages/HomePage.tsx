@@ -59,13 +59,13 @@ export default function HomePage() {
     const navigate = useNavigate();
 
     return (
-        <main className="main-content" style={{ justifyContent: 'center', position: 'relative' }}>
+        <main className="main-content" style={{ justifyContent: 'flex-start', position: 'relative' }}>
             <h1>{latestMeeting ? latestMeeting.title : '환영합니다!'}</h1>
             {/* <p>
                 {latestMeeting ? latestMeeting.desc || '모임 설명이 없습니다.' : '모임 만들기 서비스를 이용해보세요.'}
             </p> */}
 
-            <div style={{ marginTop: '2rem', marginBottom: '2rem', width: '100%', maxWidth: '800px' }}>
+            <div style={{ width: '100%', maxWidth: '800px' }}>
                 {/* slides가 비어있어도 ImageSlider가 에러나지 않도록 체크, 하지만 defaultSlides가 있어서 괜찮음 */}
                 <ImageSlider slides={slides} interval={3000} />
             </div>
@@ -74,18 +74,17 @@ export default function HomePage() {
                 onClick={() => navigate('/list')}
                 style={{
                     position: 'absolute',
-                    bottom: '2rem',
+                    top: '2rem',
                     right: '2rem',
-                    padding: '0.8rem 1.5rem',
-                    backgroundColor: 'var(--c-accent)',
-                    color: 'var(--c-bg)',
+                    backgroundColor: 'transparent',
                     border: 'none',
-                    borderRadius: '8px',
-                    fontWeight: 'bold',
+                    fontSize: '1rem',
+                    color: '#ccc',
                     cursor: 'pointer',
+                    zIndex: 10,
                 }}
             >
-                돌아가기
+                X
             </button>
         </main>
     );

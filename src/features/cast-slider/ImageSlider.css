@@ -10,7 +10,7 @@
 .slider-wrapper {
     position: relative;
     width: 100%;
-    height: 400px; /* Fixed height to accommodate image + text */
+    height: 550px; /* Fixed height to accommodate image + text */
     margin-bottom: 2rem;
 }
 
@@ -31,8 +31,8 @@
 }
 
 .slide img {
-    width: 250px;
-    height: 250px;
+    width: 350px;
+    height: 350px;
     object-fit: cover;
     border-radius: 50%; /* Circular Image */
     border: 4px solid var(--c-accent); /* Accent border */
