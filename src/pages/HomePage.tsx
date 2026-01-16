@@ -78,7 +78,7 @@ export default function HomePage() {
                     right: '2rem',
                     backgroundColor: 'transparent',
                     border: 'none',
-                    fontSize: '1rem',
+                    fontSize: '1.4rem',
                     color: '#ccc',
                     cursor: 'pointer',
                     zIndex: 10,
