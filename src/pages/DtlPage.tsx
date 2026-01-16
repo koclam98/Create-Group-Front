@@ -195,9 +195,6 @@ export default function DtlPage() {
                         onClick={handleUpdate}
                         style={{
                             flex: 1,
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            border: 'none',
                         }}
                     >
                         수정하기
@@ -206,9 +203,6 @@ export default function DtlPage() {
                         onClick={() => navigate('/list')}
                         style={{
                             flex: 1,
-                            backgroundColor: '#6c757d',
-                            color: 'white',
-                            border: 'none',
                         }}
                     >
                         목록으로
