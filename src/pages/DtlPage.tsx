@@ -10,6 +10,12 @@ export default function DtlPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
+    const [formData, setFormData] = useState({
+        name: '',
+        season: '',
+        phone: '',
+    });
+
     useEffect(() => {
         const fetchParticipant = async () => {
             if (!id) {
@@ -20,6 +26,11 @@ export default function DtlPage() {
                 setLoading(true);
                 const data = await ParticipantService.getById(id);
                 setParticipant(data);
+                setFormData({
+                    name: data.name,
+                    season: data.season,
+                    phone: data.phone,
+                });
             } catch (err) {
                 console.error('Failed to fetch participant:', err);
                 setError('참여자 정보를 불러오는데 실패했습니다.');
@@ -30,6 +41,28 @@ export default function DtlPage() {
 
         fetchParticipant();
     }, [id]);
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleUpdate = async () => {
+        if (!id) return;
+        try {
+            await ParticipantService.update(id, formData);
+            alert('수정되었습니다.');
+            const updated = await ParticipantService.getById(id);
+            setParticipant(updated);
+            navigate('/list');
+        } catch (err) {
+            console.error('Failed to update participant:', err);
+            alert('수정 실패');
+        }
+    };
 
     if (loading) {
         return (
@@ -57,7 +90,7 @@ export default function DtlPage() {
         fontSize: '1rem',
         borderRadius: '4px',
         border: '1px solid #ccc',
-        backgroundColor: '#f8f9fa', // Read-only look
+        backgroundColor: '#ffffff', // Editable look
         color: '#333',
     };
 
@@ -126,30 +159,49 @@ export default function DtlPage() {
 
                 <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <label style={labelStyle}>이름 :</label>
-                    <input type="text" value={participant.name} readOnly style={inputStyle} />
+                    <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        style={inputStyle}
+                    />
                 </div>
 
                 <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <label style={labelStyle}>기수 :</label>
-                    <input type="text" value={`${participant.season}기`} readOnly style={inputStyle} />
+                    <input
+                        type="text"
+                        name="season"
+                        value={formData.season}
+                        onChange={handleInputChange}
+                        style={inputStyle}
+                    />
                 </div>
 
                 <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <label style={labelStyle}>연락처 :</label>
-                    <input type="text" value={participant.phone} readOnly style={inputStyle} />
-                </div>
-
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label style={labelStyle}>등록일 :</label>
                     <input
                         type="text"
-                        value={new Date(participant.createdAt).toLocaleDateString()}
-                        readOnly
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
                         style={inputStyle}
                     />
                 </div>
 
                 <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                    <button
+                        onClick={handleUpdate}
+                        style={{
+                            flex: 1,
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                        }}
+                    >
+                        수정하기
+                    </button>
                     <button
                         onClick={() => navigate('/list')}
                         style={{
@@ -161,7 +213,6 @@ export default function DtlPage() {
                     >
                         목록으로
                     </button>
-                    {/* Add Edit/Delete buttons if needed here */}
                 </div>
             </div>
         </main>

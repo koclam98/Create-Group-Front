@@ -222,7 +222,7 @@ export default function ListPage() {
     const selectedParticipants = participants.filter((p) => selectedIds.includes(p.id));
 
     return (
-        <main className="main-content" style={{ justifyContent: 'flex-start', paddingTop: '4rem' }}>
+        <main className="main-content" style={{ justifyContent: 'flex-start' }}>
             <h1 style={{ marginBottom: '2rem' }}>참여자 목록</h1>
 
             <div

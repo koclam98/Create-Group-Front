@@ -61,9 +61,9 @@ export default function HomePage() {
     return (
         <main className="main-content" style={{ justifyContent: 'center', position: 'relative' }}>
             <h1>{latestMeeting ? latestMeeting.title : '환영합니다!'}</h1>
-            <p>
+            {/* <p>
                 {latestMeeting ? latestMeeting.desc || '모임 설명이 없습니다.' : '모임 만들기 서비스를 이용해보세요.'}
-            </p>
+            </p> */}
 
             <div style={{ marginTop: '2rem', marginBottom: '2rem', width: '100%', maxWidth: '800px' }}>
                 {/* slides가 비어있어도 ImageSlider가 에러나지 않도록 체크, 하지만 defaultSlides가 있어서 괜찮음 */}
