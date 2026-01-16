@@ -27,11 +27,6 @@ public class MeetingController {
         return ResponseEntity.ok(meetingService.findById(id));
     }
 
-    @GetMapping("/host/{hostId}")
-    public ResponseEntity<List<MeetingDto.Response>> findByHost(@PathVariable("hostId") String hostId) {
-        return ResponseEntity.ok(meetingService.findByHost(hostId));
-    }
-
     @PostMapping
     public ResponseEntity<MeetingDto.Response> create(@Valid @RequestBody MeetingDto.Create dto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(meetingService.create(dto));
