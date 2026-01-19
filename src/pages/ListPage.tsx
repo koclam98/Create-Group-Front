@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table } from '../components/ui/Table';
-import { ParticipantService, type Participant } from '../services/participantService';
+import { ParticipantService, type Meeting, type Participant } from '../services/participantService';
 import { meetingService } from '../services/meetingService';
 import '../app/App.css';
 
 export default function ListPage() {
     const navigate = useNavigate();
     const [participants, setParticipants] = useState<Participant[]>([]);
+    const [meetings, setMeetings] = useState<Meeting[]>([]);
     const [loading, setLoding] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -34,7 +35,7 @@ export default function ListPage() {
         }
 
         try {
-            await meetingService.create({
+            const newMeeting = await meetingService.create({
                 title: meetingName,
                 desc: '환영합니다.', // 기본값
                 date: new Date().toISOString(), // 현재 시간
@@ -43,7 +44,7 @@ export default function ListPage() {
             });
 
             alert(`'${meetingName}' 모임이 생성되었습니다!`);
-            navigate('/');
+            navigate(`/meetingDtl/${newMeeting.id}`);
             handleCloseModal();
             setSelectedIds([]); // 선택 초기화
         } catch (error) {
@@ -52,13 +53,24 @@ export default function ListPage() {
         }
     };
 
+    const formtDate = (dateString: string) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
+    };
+
     // 서버에서 데이터 불러오기
     const loadData = async () => {
         try {
             setLoding(true);
             setError(null);
-            const data = await ParticipantService.getAll();
-            setParticipants(data);
+            const participant = await ParticipantService.getAll();
+            const meetingList = await meetingService.getAll();
+            setParticipants(participant);
+            setMeetings(meetingList);
         } catch (err) {
             console.error('Failed to load participants:', err);
             setError('참여자 목록을 불러오는데 실패했습니다.');
@@ -91,8 +103,29 @@ export default function ListPage() {
         }
     };
 
+    // 선택한 모임 삭제
+    const handleDeleteSelectedMeetings = async () => {
+        if (selectedMeetingIds.length === 0) {
+            alert('삭제할 모임을 선택해주세요.');
+            return;
+        }
+
+        if (window.confirm(`선택한 ${selectedMeetingIds.length}개의 모임을 삭제하시겠습니까?`)) {
+            try {
+                await Promise.all(selectedMeetingIds.map((id) => meetingService.delete(id)));
+                setSelectedMeetingIds([]);
+                await loadData(); // 목록 새로고침
+                alert('삭제 되었습니다.');
+            } catch (err) {
+                console.error('Failed to delete meetings:', err);
+                alert('삭제에 실패했습니다.');
+            }
+        }
+    };
+
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [searchTerm, setSearchTerm] = useState(''); // 검색어 상태 추가
+    const [selectedMeetingIds, setSelectedMeetingIds] = useState<string[]>([]); // 모임 선택 상태 추가
+    const [searchTerm, setSearchTerm] = useState('');
 
     // 검색 필터링 (이름 또는 기수)
     const filteredParticipants = participants.filter((p) => {
@@ -115,6 +148,25 @@ export default function ListPage() {
             setSelectedIds(selectedIds.filter((sid) => sid !== id));
         } else {
             setSelectedIds([...selectedIds, id]);
+        }
+    };
+
+    // 모임 선택 로직
+    const isAllMeetingsSelected = meetings.length > 0 && selectedMeetingIds.length === meetings.length;
+
+    const handleSelectAllMeetings = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.checked) {
+            setSelectedMeetingIds(meetings.map((m) => m.id));
+        } else {
+            setSelectedMeetingIds([]);
+        }
+    };
+
+    const handleSelectMeetingRow = (id: string) => {
+        if (selectedMeetingIds.includes(id)) {
+            setSelectedMeetingIds(selectedMeetingIds.filter((sid) => sid !== id));
+        } else {
+            setSelectedMeetingIds([...selectedMeetingIds, id]);
         }
     };
 
@@ -175,6 +227,59 @@ export default function ListPage() {
         },
         { header: '기수', accessor: 'season' as keyof Participant, width: 100 },
         { header: '연락처', accessor: 'phone' as keyof Participant, width: 100 },
+    ];
+
+    const meetingColumns = [
+        {
+            header: (
+                <input
+                    type="checkbox"
+                    checked={isAllMeetingsSelected}
+                    onChange={handleSelectAllMeetings}
+                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                />
+            ),
+            accessor: 'id' as keyof Meeting,
+            width: 50,
+            render: (row: Meeting) => (
+                <input
+                    type="checkbox"
+                    checked={selectedMeetingIds.includes(row.id)}
+                    onChange={() => handleSelectMeetingRow(row.id)}
+                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                />
+            ),
+        },
+        {
+            header: '모임명',
+            accessor: 'title' as keyof Meeting,
+            width: 80,
+            render: (row: Meeting) => (
+                <span
+                    onClick={() => navigate(`/meetingDtl/${row.id}`)}
+                    style={{
+                        cursor: 'pointer',
+                        color: '#007bff',
+                        textDecoration: 'underline',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    {row.title}
+                </span>
+            ),
+        },
+        {
+            header: '생성일',
+            accessor: 'createdAt' as keyof Meeting,
+            width: 80,
+            render: (row: Meeting) => formtDate(row.createdAt),
+        },
+        {
+            header: '수정일',
+            accessor: 'updatedAt' as keyof Meeting,
+            width: 80,
+            render: (row: Meeting) => formtDate(row.updatedAt),
+        },
     ];
 
     // 로딩 중
@@ -413,19 +518,55 @@ export default function ListPage() {
             </section>
 
             {/* 하단: 모임 목록 영역 */}
-            <section style={{ width: '100%', maxWidth: '800px' }}>
-                <h1 style={{ marginBottom: '1rem', fontSize: '2rem' }}>모임 목록</h1>
+            <section
+                style={{
+                    width: '100%',
+                    maxWidth: '800px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <h1 style={{ marginBottom: '2rem', fontSize: '2rem' }}>모임 목록</h1>
+
+                {/* 모임 선택 삭제 버튼 영역 */}
                 <div
                     style={{
-                        padding: '2rem',
-                        textAlign: 'center',
-                        backgroundColor: '#f8f9fa',
-                        borderRadius: '8px',
-                        border: '1px solid #eee',
+                        marginBottom: '1rem',
+                        width: '100%',
+                        maxWidth: '800px',
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        gap: '1rem',
                     }}
                 >
-                    <p style={{ color: '#666' }}>등록된 모임이 표시될 영역입니다.</p>
+                    {selectedMeetingIds.length > 0 && (
+                        <button
+                            onClick={handleDeleteSelectedMeetings}
+                            style={{ backgroundColor: '#ffc107', color: 'black', borderColor: '#ffc107' }}
+                        >
+                            선택 삭제 ({selectedMeetingIds.length})
+                        </button>
+                    )}
                 </div>
+
+                {meetings.length === 0 ? (
+                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                        <p>등록된 모임이 없습니다.</p>
+                        <button onClick={handleOpenModal} style={{ marginTop: '1rem' }}>
+                            모임 만들기
+                        </button>
+                    </div>
+                ) : (
+                    <Table
+                        columns={meetingColumns}
+                        data={meetings}
+                        containerStyle={{
+                            width: '90%',
+                            maxWidth: '800px',
+                        }}
+                    />
+                )}
             </section>
         </main>
     );

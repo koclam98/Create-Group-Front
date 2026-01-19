@@ -1,4 +1,6 @@
 import api from '../lib/api';
+import type { Meeting } from './meetingService';
+export type { Meeting };
 
 export interface Participant {
     id: string;
@@ -15,15 +17,6 @@ export interface Profile {
     id: string;
     imageUrl?: string;
     participantId: string;
-}
-
-export interface Meeting {
-    id: string;
-    title: string;
-    desc: string;
-    date: string;
-    location: string;
-    hostId: string;
 }
 
 export const ParticipantService = {

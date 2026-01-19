@@ -24,7 +24,7 @@ public class MeetingService {
     private final ParticipantRepository participantRepository;
 
     public List<MeetingDto.Response> findAll() {
-        return meetingRepository.findAll().stream()
+        return meetingRepository.findAllByOrderByUpdatedAtDesc().stream()
                 .map(MeetingDto.Response::from)
                 .collect(Collectors.toList());
     }
