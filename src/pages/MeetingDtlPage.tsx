@@ -323,7 +323,7 @@ export default function MeetingDtlPage() {
                                     />
                                 ),
                                 accessor: 'id',
-                                width: 50,
+                                width: 30,
                                 render: (row: Participant) => (
                                     <input
                                         type="checkbox"
@@ -337,7 +337,7 @@ export default function MeetingDtlPage() {
                             { header: '기수', accessor: 'season', width: 40 },
                         ]}
                         data={filteredAttendees}
-                        containerStyle={{ width: '100%' }}
+                        containerStyle={{ width: '80%' }}
                     />
                 </div>
 
@@ -377,7 +377,7 @@ export default function MeetingDtlPage() {
                                     />
                                 ),
                                 accessor: 'id',
-                                width: 50,
+                                width: 30,
                                 render: (row: Participant) => (
                                     <input
                                         type="checkbox"
@@ -391,7 +391,7 @@ export default function MeetingDtlPage() {
                             { header: '기수', accessor: 'season', width: 40 },
                         ]}
                         data={filteredNonAttendees}
-                        containerStyle={{ width: '100%' }}
+                        containerStyle={{ width: '80%' }}
                     />
                 </div>
             </div>

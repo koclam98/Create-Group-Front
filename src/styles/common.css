@@ -37,6 +37,7 @@
 }
 
 .form-label-centered {
+    margin-right: 1rem;
     margin-bottom: 0.5rem;
     font-weight: bold;
     color: var(--c-text);
@@ -244,7 +245,7 @@
 
 /* Search Bar Styles */
 .search-container {
-    width: 100%;
+    width: 80%;
     display: flex;
     justify-content: center;
     align-items: center;
