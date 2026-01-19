@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ParticipantService, type Participant } from '../services/participantService';
 import { profileService } from '../services/profileService';
 import '../app/App.css';
+import '../styles/common.css';
 
 export default function DtlPage() {
     const navigate = useNavigate();
@@ -94,7 +95,7 @@ export default function DtlPage() {
 
     if (loading) {
         return (
-            <main className="main-content" style={{ justifyContent: 'center', paddingTop: '4rem' }}>
+            <main className="main-content loading-container">
                 <p>로딩 중...</p>
             </main>
         );
@@ -102,83 +103,31 @@ export default function DtlPage() {
 
     if (error || !participant) {
         return (
-            <main className="main-content" style={{ justifyContent: 'center', paddingTop: '4rem' }}>
-                <p style={{ color: 'red' }}>{error || '참여자를 찾을 수 없습니다.'}</p>
-                <button onClick={() => navigate('/list')} style={{ marginTop: '1rem' }}>
+            <main className="main-content loading-container">
+                <p className="error-text">{error || '참여자를 찾을 수 없습니다.'}</p>
+                <button onClick={() => navigate('/list')} className="mt-1">
                     목록으로 돌아가기
                 </button>
             </main>
         );
     }
 
-    // Reuse styles from AddPage inline or consistent approach
-    const inputStyle = {
-        flex: 1,
-        padding: '0.5rem',
-        fontSize: '1rem',
-        borderRadius: '4px',
-        border: '1px solid #ccc',
-        backgroundColor: '#ffffff', // Editable look
-        color: '#333',
-    };
-
-    const labelStyle = {
-        width: '80px',
-        textAlign: 'right' as const,
-        fontWeight: 'bold',
-    };
-
     return (
         <main className="main-content">
-            <h1 style={{ marginBottom: '2rem' }}>참여자 상세</h1>
+            <h1 className="section-header">참여자 상세</h1>
 
-            <div
-                style={{
-                    width: '100%',
-                    maxWidth: '500px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1rem',
-                }}
-            >
-                <div
-                    className="form-group"
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        marginBottom: '1.5rem',
-                    }}
-                >
-                    <label style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>프로필 이미지</label>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div className="form-container">
+                <div className="form-group-column">
+                    <label className="form-label-centered">프로필 이미지</label>
+                    <div className="profile-image-container">
                         {preview ? (
                             <img
                                 src={preview}
                                 alt={participant.name}
-                                style={{
-                                    width: '120px',
-                                    height: '120px',
-                                    borderRadius: '50%',
-                                    objectFit: 'cover',
-                                    marginBottom: '1rem',
-                                    border: '2px solid #ddd',
-                                }}
+                                className="profile-image"
                             />
                         ) : (
-                            <div
-                                style={{
-                                    width: '120px',
-                                    height: '120px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#eee',
-                                    marginBottom: '1rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color: '#888',
-                                }}
-                            >
+                            <div className="profile-image-placeholder">
                                 No Image
                             </div>
                         )}
@@ -186,59 +135,49 @@ export default function DtlPage() {
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
-                            style={{ marginLeft: '2rem' }}
+                            className="profile-image-upload"
                         />
                     </div>
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label style={labelStyle}>이름 :</label>
+                <div className="form-group">
+                    <label className="form-label-short">이름 :</label>
                     <input
                         type="text"
                         name="name"
                         value={formData.name}
                         onChange={handleInputChange}
-                        style={inputStyle}
+                        className="form-input-editable"
                     />
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label style={labelStyle}>기수 :</label>
+                <div className="form-group">
+                    <label className="form-label-short">기수 :</label>
                     <input
                         type="text"
                         name="season"
                         value={formData.season}
                         onChange={handleInputChange}
-                        style={inputStyle}
+                        className="form-input-editable"
                     />
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label style={labelStyle}>연락처 :</label>
+                <div className="form-group">
+                    <label className="form-label-short">연락처 :</label>
                     <input
                         type="text"
                         name="phone"
                         value={formData.phone}
                         onChange={handleInputChange}
-                        style={inputStyle}
+                        className="form-input-editable"
                     />
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                    <button
-                        onClick={handleUpdate}
-                        style={{
-                            flex: 1,
-                        }}
-                    >
+                <div className="button-group">
+                    <button onClick={handleUpdate} className="button-flex-1">
                         수정하기
                     </button>
-                    <button
-                        onClick={() => navigate('/list')}
-                        style={{
-                            flex: 1,
-                        }}
-                    >
+                    <button onClick={() => navigate('/list')} className="button-flex-1">
                         목록으로
                     </button>
                 </div>

@@ -1,0 +1,11 @@
+/* ListPage Specific Styles */
+
+.list-main {
+    justify-content: flex-start;
+    gap: 4rem;
+}
+
+.list-table-container {
+    width: 90%;
+    max-width: 800px;
+}

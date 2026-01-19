@@ -125,3 +125,6 @@ dist-ssr/
 data/
 *.mv.db
 *.trace.db
+
+# Claude Code temporary files
+tmpclaude-*

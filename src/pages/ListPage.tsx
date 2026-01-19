@@ -4,19 +4,24 @@ import { Table } from '../components/ui/Table';
 import { ParticipantService, type Meeting, type Participant } from '../services/participantService';
 import { meetingService } from '../services/meetingService';
 import '../app/App.css';
+import '../styles/common.css';
+
+const DEFAULT_MEETING_DESC = '환영합니다.';
+const DEFAULT_LOCATION = '서울';
 
 export default function ListPage() {
     const navigate = useNavigate();
     const [participants, setParticipants] = useState<Participant[]>([]);
     const [meetings, setMeetings] = useState<Meeting[]>([]);
-    const [loading, setLoding] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // 모달 상태
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [meetingName, setMeetingName] = useState('');
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const [selectedMeetingIds, setSelectedMeetingIds] = useState<string[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
-    // 모달 핸들러
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => {
         setIsModalOpen(false);
@@ -37,23 +42,23 @@ export default function ListPage() {
         try {
             const newMeeting = await meetingService.create({
                 title: meetingName,
-                desc: '환영합니다.', // 기본값
-                date: new Date().toISOString(), // 현재 시간
-                location: '서울', // 기본값
+                desc: DEFAULT_MEETING_DESC,
+                date: new Date().toISOString(),
+                location: DEFAULT_LOCATION,
                 participantIds: selectedIds,
             });
 
             alert(`'${meetingName}' 모임이 생성되었습니다!`);
             navigate(`/meetingDtl/${newMeeting.id}`, { state: { isNew: true } });
             handleCloseModal();
-            setSelectedIds([]); // 선택 초기화
+            setSelectedIds([]);
         } catch (error) {
             console.error('Failed to create meeting:', error);
             alert('모임 생성에 실패했습니다.');
         }
     };
 
-    const formtDate = (dateString: string) => {
+    const formatDate = (dateString: string) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('ko-KR', {
             year: 'numeric',
@@ -62,10 +67,9 @@ export default function ListPage() {
         });
     };
 
-    // 서버에서 데이터 불러오기
     const loadData = async () => {
         try {
-            setLoding(true);
+            setLoading(true);
             setError(null);
             const participant = await ParticipantService.getAll();
             const meetingList = await meetingService.getAll();
@@ -75,7 +79,7 @@ export default function ListPage() {
             console.error('Failed to load participants:', err);
             setError('참여자 목록을 불러오는데 실패했습니다.');
         } finally {
-            setLoding(false);
+            setLoading(false);
         }
     };
 
@@ -83,7 +87,6 @@ export default function ListPage() {
         loadData();
     }, []);
 
-    // 선택한 참여자 삭제
     const handleDeleteSelected = async () => {
         if (selectedIds.length === 0) {
             alert('삭제할 참여자를 선택해주세요.');
@@ -94,7 +97,7 @@ export default function ListPage() {
             try {
                 await Promise.all(selectedIds.map((id) => ParticipantService.delete(id)));
                 setSelectedIds([]);
-                await loadData(); // 목록 새로고침
+                await loadData();
                 alert('삭제 되었습니다.');
             } catch (err) {
                 console.error('Failed to delete participants:', err);
@@ -103,7 +106,6 @@ export default function ListPage() {
         }
     };
 
-    // 선택한 모임 삭제
     const handleDeleteSelectedMeetings = async () => {
         if (selectedMeetingIds.length === 0) {
             alert('삭제할 모임을 선택해주세요.');
@@ -114,7 +116,7 @@ export default function ListPage() {
             try {
                 await Promise.all(selectedMeetingIds.map((id) => meetingService.delete(id)));
                 setSelectedMeetingIds([]);
-                await loadData(); // 목록 새로고침
+                await loadData();
                 alert('삭제 되었습니다.');
             } catch (err) {
                 console.error('Failed to delete meetings:', err);
@@ -123,11 +125,6 @@ export default function ListPage() {
         }
     };
 
-    const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [selectedMeetingIds, setSelectedMeetingIds] = useState<string[]>([]); // 모임 선택 상태 추가
-    const [searchTerm, setSearchTerm] = useState('');
-
-    // 검색 필터링 (이름 또는 기수)
     const filteredParticipants = participants.filter((p) => {
         const lowerTerm = searchTerm.toLowerCase();
         return p.name.toLowerCase().includes(lowerTerm) || p.season.toLowerCase().includes(lowerTerm);
@@ -151,7 +148,6 @@ export default function ListPage() {
         }
     };
 
-    // 모임 선택 로직
     const isAllMeetingsSelected = meetings.length > 0 && selectedMeetingIds.length === meetings.length;
 
     const handleSelectAllMeetings = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -170,7 +166,6 @@ export default function ListPage() {
         }
     };
 
-    // 컬럼 정의 (체크박스 사이즈 확대)
     const columns = [
         {
             header: (
@@ -178,7 +173,7 @@ export default function ListPage() {
                     type="checkbox"
                     checked={isAllSelected}
                     onChange={handleSelectAll}
-                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                    className="checkbox-large"
                 />
             ),
             accessor: 'id' as keyof Participant,
@@ -188,7 +183,7 @@ export default function ListPage() {
                     type="checkbox"
                     checked={selectedIds.includes(row.id)}
                     onChange={() => handleSelectRow(row.id)}
-                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                    className="checkbox-large"
                 />
             ),
         },
@@ -201,7 +196,7 @@ export default function ListPage() {
                     <img
                         src={row.profile.imageUrl}
                         alt={row.name}
-                        style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }}
+                        className="profile-image-small"
                     />
                 ) : (
                     <span>-</span>
@@ -214,12 +209,7 @@ export default function ListPage() {
             render: (row: Participant) => (
                 <span
                     onClick={() => navigate(`/dtl/${row.id}`)}
-                    style={{
-                        cursor: 'pointer',
-                        color: '#007bff',
-                        textDecoration: 'underline',
-                        fontWeight: 'bold',
-                    }}
+                    className="link-primary"
                 >
                     {row.name}
                 </span>
@@ -236,7 +226,7 @@ export default function ListPage() {
                     type="checkbox"
                     checked={isAllMeetingsSelected}
                     onChange={handleSelectAllMeetings}
-                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                    className="checkbox-large"
                 />
             ),
             accessor: 'id' as keyof Meeting,
@@ -246,7 +236,7 @@ export default function ListPage() {
                     type="checkbox"
                     checked={selectedMeetingIds.includes(row.id)}
                     onChange={() => handleSelectMeetingRow(row.id)}
-                    style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                    className="checkbox-large"
                 />
             ),
         },
@@ -257,12 +247,7 @@ export default function ListPage() {
             render: (row: Meeting) => (
                 <span
                     onClick={() => navigate(`/meetingDtl/${row.id}`)}
-                    style={{
-                        cursor: 'pointer',
-                        color: '#007bff',
-                        textDecoration: 'underline',
-                        fontWeight: 'bold',
-                    }}
+                    className="link-primary"
                 >
                     {row.title}
                 </span>
@@ -272,34 +257,32 @@ export default function ListPage() {
             header: '생성일',
             accessor: 'createdAt' as keyof Meeting,
             width: 80,
-            render: (row: Meeting) => formtDate(row.createdAt),
+            render: (row: Meeting) => formatDate(row.createdAt),
         },
         {
             header: '수정일',
             accessor: 'updatedAt' as keyof Meeting,
             width: 80,
-            render: (row: Meeting) => formtDate(row.updatedAt),
+            render: (row: Meeting) => formatDate(row.updatedAt),
         },
     ];
 
-    // 로딩 중
     if (loading) {
         return (
             <div className="app">
-                <main className="main-content" style={{ justifyContent: 'center', paddingTop: '4rem' }}>
+                <main className="main-content loading-container">
                     <p>로딩 중...</p>
                 </main>
             </div>
         );
     }
 
-    // 에러 발생
     if (error) {
         return (
             <div className="app">
-                <main className="main-content" style={{ justifyContent: 'center', paddingTop: '4rem' }}>
-                    <p style={{ color: 'red' }}>{error}</p>
-                    <button onClick={loadData} style={{ marginTop: '1rem' }}>
+                <main className="main-content loading-container">
+                    <p className="error-text">{error}</p>
+                    <button onClick={loadData} className="mt-1">
                         다시 시도
                     </button>
                 </main>
@@ -307,37 +290,18 @@ export default function ListPage() {
         );
     }
 
-    // 선택된 참여자 목록
     const selectedParticipants = participants.filter((p) => selectedIds.includes(p.id));
 
     return (
-        <main className="main-content" style={{ justifyContent: 'flex-start', gap: '4rem' }}>
-            {/* 상단: 참여자 목록 영역 */}
-            <section
-                style={{
-                    width: '100%',
-                    maxWidth: '800px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <h1 style={{ marginBottom: '2rem', fontSize: '2rem' }}>참여자 목록</h1>
+        <main className="main-content justify-start gap-4">
+            <section className="section-container">
+                <h1 className="section-header">참여자 목록</h1>
 
-                <div
-                    style={{
-                        marginBottom: '1rem',
-                        width: '100%',
-                        maxWidth: '800px',
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        gap: '1rem',
-                    }}
-                >
+                <div className="section-actions">
                     {selectedIds.length > 0 && (
                         <button
                             onClick={handleDeleteSelected}
-                            style={{ backgroundColor: '#ffc107', color: 'black', borderColor: '#ffc107' }}
+                            className="button-warning"
                         >
                             선택 삭제 ({selectedIds.length})
                         </button>
@@ -346,49 +310,23 @@ export default function ListPage() {
                     <button onClick={handleOpenModal}>모임 등록</button>
                 </div>
 
-                <div
-                    style={{
-                        marginBottom: '1rem',
-                        width: '100%',
-                        maxWidth: '800px',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        gap: '0.5rem',
-                    }}
-                >
+                <div className="section-search">
                     <input
                         type="text"
                         placeholder="이름 또는 기수로 검색..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        style={{
-                            width: '60%',
-                            padding: '0.8rem',
-                            fontSize: '1rem',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                            boxSizing: 'border-box',
-                        }}
+                        className="form-input-large"
                     />
-                    <button
-                        style={{
-                            padding: '0.8rem 1.5rem',
-                            backgroundColor: '#007bff',
-                            color: 'white',
-                            border: 'none',
-                            borderRadius: '4px',
-                            cursor: 'pointer',
-                            whiteSpace: 'nowrap',
-                        }}
-                    >
+                    <button className="button-primary">
                         검색
                     </button>
                 </div>
 
                 {participants.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                    <div className="content-centered">
                         <p>등록된 참여자가 없습니다.</p>
-                        <button onClick={() => navigate('/add')} style={{ marginTop: '1rem' }}>
+                        <button onClick={() => navigate('/add')} className="mt-1">
                             첫 참여자 등록하기
                         </button>
                     </div>
@@ -403,44 +341,13 @@ export default function ListPage() {
                     />
                 )}
 
-                {/* 모달 UI */}
                 {isModalOpen && (
-                    <div
-                        style={{
-                            position: 'fixed',
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            zIndex: 1000,
-                        }}
-                    >
-                        <div
-                            style={{
-                                backgroundColor: 'white',
-                                padding: '2rem',
-                                borderRadius: '8px',
-                                width: '90%',
-                                maxWidth: '400px',
-                                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-                            }}
-                        >
-                            <h2 style={{ marginTop: 0, marginBottom: '1.5rem', color: '#333' }}>모임 등록</h2>
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <h2 className="modal-header">모임 등록</h2>
 
-                            <div style={{ marginBottom: '1.5rem' }}>
-                                <label
-                                    htmlFor="meetingName"
-                                    style={{
-                                        display: 'block',
-                                        marginBottom: '0.5rem',
-                                        fontWeight: 'bold',
-                                        color: '#555',
-                                    }}
-                                >
+                            <div className="modal-input-wrapper">
+                                <label htmlFor="meetingName" className="form-label-centered">
                                     모임 이름
                                 </label>
                                 <input
@@ -449,65 +356,34 @@ export default function ListPage() {
                                     value={meetingName}
                                     onChange={(e) => setMeetingName(e.target.value)}
                                     placeholder="모임 이름을 입력하세요"
-                                    style={{
-                                        width: '100%',
-                                        padding: '0.8rem',
-                                        fontSize: '1rem',
-                                        borderRadius: '4px',
-                                        border: '1px solid #ccc',
-                                        boxSizing: 'border-box',
-                                    }}
+                                    className="form-input-large"
                                 />
                             </div>
 
-                            {/* 선택된 참여자 표시 */}
                             {selectedParticipants.length > 0 && (
-                                <div
-                                    style={{
-                                        marginBottom: '1.5rem',
-                                        backgroundColor: '#f8f9fa',
-                                        padding: '1rem',
-                                        borderRadius: '4px',
-                                    }}
-                                >
-                                    <p style={{ fontWeight: 'bold', marginBottom: '0.5rem', marginTop: 0 }}>
+                                <div className="modal-selected-list">
+                                    <p className="modal-selected-title">
                                         선택 참여자 ({selectedParticipants.length})
                                     </p>
-                                    <ul
-                                        style={{
-                                            listStyle: 'none',
-                                            padding: 0,
-                                            margin: 0,
-                                            maxHeight: '100px',
-                                            overflowY: 'auto',
-                                        }}
-                                    >
+                                    <ul className="modal-participant-list">
                                         {selectedParticipants.map((p) => (
-                                            <li key={p.id} style={{ fontSize: '0.9rem', marginBottom: '0.2rem' }}>
+                                            <li key={p.id} className="modal-participant-item">
                                                 {p.name} ({p.season})
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                             )}
-                            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                            <div className="modal-actions">
                                 <button
                                     onClick={handleCloseModal}
-                                    style={{
-                                        backgroundColor: '#6c757d',
-                                        borderColor: '#6c757d',
-                                        color: 'white',
-                                    }}
+                                    className="button-secondary"
                                 >
                                     취소
                                 </button>
                                 <button
                                     onClick={handleCreateMeeting}
-                                    style={{
-                                        backgroundColor: '#007bff',
-                                        borderColor: '#007bff',
-                                        color: 'white',
-                                    }}
+                                    className="button-primary"
                                 >
                                     등록
                                 </button>
@@ -517,33 +393,14 @@ export default function ListPage() {
                 )}
             </section>
 
-            {/* 하단: 모임 목록 영역 */}
-            <section
-                style={{
-                    width: '100%',
-                    maxWidth: '800px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                }}
-            >
-                <h1 style={{ marginBottom: '2rem', fontSize: '2rem' }}>모임 목록</h1>
+            <section className="section-container">
+                <h1 className="section-header">모임 목록</h1>
 
-                {/* 모임 선택 삭제 버튼 영역 */}
-                <div
-                    style={{
-                        marginBottom: '1rem',
-                        width: '100%',
-                        maxWidth: '800px',
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                        gap: '1rem',
-                    }}
-                >
+                <div className="section-actions">
                     {selectedMeetingIds.length > 0 && (
                         <button
                             onClick={handleDeleteSelectedMeetings}
-                            style={{ backgroundColor: '#ffc107', color: 'black', borderColor: '#ffc107' }}
+                            className="button-warning"
                         >
                             선택 삭제 ({selectedMeetingIds.length})
                         </button>
@@ -551,9 +408,9 @@ export default function ListPage() {
                 </div>
 
                 {meetings.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '2rem' }}>
+                    <div className="content-centered">
                         <p>등록된 모임이 없습니다.</p>
-                        <button onClick={handleOpenModal} style={{ marginTop: '1rem' }}>
+                        <button onClick={handleOpenModal} className="mt-1">
                             모임 만들기
                         </button>
                     </div>

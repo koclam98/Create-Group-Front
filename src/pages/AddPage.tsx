@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ParticipantService } from '../services/participantService';
 import { profileService } from '../services/profileService';
-import '../app/App.css'; // Reuse basic styles
+import '../app/App.css';
+import '../styles/common.css';
+
+const DEFAULT_SEASON = '16기';
 
 export default function AddPage() {
     const navigate = useNavigate();
     const [name, setName] = useState('');
-    const [season, setSeason] = useState('16기'); // Default value
+    const [season, setSeason] = useState(DEFAULT_SEASON);
     const [phone, setPhone] = useState('');
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
     const [preview, setPreview] = useState<string | undefined>(undefined);
@@ -34,14 +37,12 @@ export default function AddPage() {
         }
 
         try {
-            // 1. 참여자 생성
             const participant = await ParticipantService.create({
                 name,
                 season,
                 phone,
             });
 
-            // 2. 프로필 이미지가 있다면 프로필 생성
             if (profileImage) {
                 await profileService.create({
                     imageUrl: profileImage,
@@ -59,50 +60,20 @@ export default function AddPage() {
 
     return (
         <main className="main-content">
-            <h1 style={{ marginBottom: '2rem' }}>참여자 등록</h1>
+            <h1 className="section-header">참여자 등록</h1>
 
-            <form
-                onSubmit={handleSubmit}
-                style={{ width: '100%', maxWidth: '500px', display: 'flex', flexDirection: 'column', gap: '1rem' }}
-            >
-                <div
-                    className="form-group"
-                    style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        marginBottom: '1.5rem',
-                    }}
-                >
-                    <label style={{ marginBottom: '0.5rem', fontWeight: 'bold' }}>프로필 이미지</label>
-                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <form onSubmit={handleSubmit} className="form-container">
+                <div className="form-group-column">
+                    <label className="form-label-centered">프로필 이미지</label>
+                    <div className="profile-image-container">
                         {preview ? (
                             <img
                                 src={preview}
                                 alt="Preview"
-                                style={{
-                                    width: '120px',
-                                    height: '120px',
-                                    borderRadius: '50%',
-                                    objectFit: 'cover',
-                                    marginBottom: '1rem',
-                                    border: '2px solid #ddd',
-                                }}
+                                className="profile-image"
                             />
                         ) : (
-                            <div
-                                style={{
-                                    width: '120px',
-                                    height: '120px',
-                                    borderRadius: '50%',
-                                    backgroundColor: '#eee',
-                                    marginBottom: '1rem',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    color: '#888',
-                                }}
-                            >
+                            <div className="profile-image-placeholder">
                                 No Image
                             </div>
                         )}
@@ -110,13 +81,13 @@ export default function AddPage() {
                             type="file"
                             accept="image/*"
                             onChange={handleImageChange}
-                            style={{ marginLeft: '2rem' }}
+                            className="profile-image-upload"
                         />
                     </div>
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label htmlFor="name" style={{ width: '80px', textAlign: 'right', fontWeight: 'bold' }}>
+                <div className="form-group">
+                    <label htmlFor="name" className="form-label-short">
                         이름 :
                     </label>
                     <input
@@ -124,19 +95,13 @@ export default function AddPage() {
                         type="text"
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        style={{
-                            flex: 1,
-                            padding: '0.5rem',
-                            fontSize: '1rem',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                        }}
+                        className="form-input"
                         placeholder="이름을 입력하세요"
                     />
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label htmlFor="season" style={{ width: '80px', textAlign: 'right', fontWeight: 'bold' }}>
+                <div className="form-group">
+                    <label htmlFor="season" className="form-label-short">
                         기수 :
                     </label>
                     <input
@@ -144,19 +109,13 @@ export default function AddPage() {
                         type="text"
                         value={season}
                         onChange={(e) => setSeason(e.target.value)}
-                        style={{
-                            flex: 1,
-                            padding: '0.5rem',
-                            fontSize: '1rem',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                        }}
+                        className="form-input"
                         placeholder="예: 16"
                     />
                 </div>
 
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <label htmlFor="phone" style={{ width: '80px', textAlign: 'right', fontWeight: 'bold' }}>
+                <div className="form-group">
+                    <label htmlFor="phone" className="form-label-short">
                         연락처 :
                     </label>
                     <input
@@ -164,27 +123,19 @@ export default function AddPage() {
                         type="text"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        style={{
-                            flex: 1,
-                            padding: '0.5rem',
-                            fontSize: '1rem',
-                            borderRadius: '4px',
-                            border: '1px solid #ccc',
-                        }}
+                        className="form-input"
                         placeholder="010-0000-0000"
                     />
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                    <button type="submit" style={{ flex: 1 }}>
+                <div className="button-group">
+                    <button type="submit" className="button-flex-1">
                         등록하기
                     </button>
                     <button
                         type="button"
                         onClick={() => navigate('/list')}
-                        style={{
-                            flex: 1,
-                        }}
+                        className="button-flex-1"
                     >
                         취소
                     </button>

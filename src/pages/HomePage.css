@@ -1,0 +1,11 @@
+/* HomePage Specific Styles */
+
+.home-main {
+    justify-content: flex-start;
+    position: relative;
+}
+
+.home-slider-container {
+    width: 100%;
+    max-width: 800px;
+}
