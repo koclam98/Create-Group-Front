@@ -40,7 +40,10 @@ export const meetingService = {
     },
 
     // 모임 수정
-    update: async (id: string, data: Partial<{ title: string; desc: string; date: string; location: string }>) => {
+    update: async (
+        id: string,
+        data: Partial<{ title: string; desc: string; date: string; location: string; participantIds: string[] }>
+    ) => {
         const response = await api.patch<Meeting>(`/meetings/${id}`, data);
         return response.data;
     },

@@ -44,7 +44,7 @@ export default function ListPage() {
             });
 
             alert(`'${meetingName}' 모임이 생성되었습니다!`);
-            navigate(`/meetingDtl/${newMeeting.id}`);
+            navigate(`/meetingDtl/${newMeeting.id}`, { state: { isNew: true } });
             handleCloseModal();
             setSelectedIds([]); // 선택 초기화
         } catch (error) {

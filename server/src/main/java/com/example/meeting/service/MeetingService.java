@@ -58,8 +58,18 @@ public class MeetingService {
         if (dto.getDesc() != null) meeting.setDesc(dto.getDesc());
         if (dto.getDate() != null) meeting.setDate(DateTimeUtil.parseIsoString(dto.getDate()));
         if (dto.getLocation() != null) meeting.setLocation(dto.getLocation());
+        if (dto.getParticipantIds() != null) {
+            System.out.println("Updating participants. IDs: " + dto.getParticipantIds());
+            List<Participant> participants = getParticipantsByIds(dto.getParticipantIds());
+            
+            // 기존 컬렉션을 clear하고 새로운 참여자 추가
+            meeting.getParticipants().clear();
+            meeting.getParticipants().addAll(participants);
+            System.out.println("Participants updated. New count: " + meeting.getParticipants().size());
+        }
 
-        return MeetingDto.Response.from(meeting);
+        Meeting savedMeeting = meetingRepository.save(meeting);
+        return MeetingDto.Response.from(savedMeeting);
     }
 
     @Transactional

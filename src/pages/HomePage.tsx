@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import '../app/App.css';
 import ImageSlider, { type SlideData } from '../features/cast-slider/ImageSlider';
 import { meetingService, type Meeting } from '../services/meetingService';
@@ -21,20 +21,26 @@ export default function HomePage() {
         },
     ];
 
+    const location = useLocation();
+    const state = location.state as { meetingId?: string } | null;
+
     useEffect(() => {
         const fetchMeetings = async () => {
             try {
                 const data = await meetingService.getAll();
-                // 최신 순으로 정렬 (생성일 기준 내림차순 가정, 혹은 배열의 마지막 요소가 최신이라면 reverse 필요)
-                // 여기서는 API가 최신순 혹은 생성순으로 준다고 가정하고, 가장 마지막에 생성된 것을 보여주거나 첫번째 것을 보여줍니다.
-                // 보통 배열의 끝에 추가되므로 reverse() 하여 첫번째를 가져오거나,
-                // DB에서 정렬되어 오지 않는다면 클라이언트에서 정렬.
-                // 일단 간단히 배열의 맨 마지막 요소를 최신으로 간주하겠습니다. (목록 조회시 보통 생성순)
                 if (data.length > 0) {
-                    // id가 string이므로 정확한 날짜 비교가 어렵다면 createdAt을 써야 하는데 Meeting 타입에 createdAt이 있음.
-                    // 안전하게 createdAt 내림차순 정렬
+                    // 1. 요청된 meetingId가 있으면 그것을 우선 표시
+                    if (state?.meetingId) {
+                        const target = data.find((m) => m.id === state.meetingId);
+                        if (target) {
+                            setLatestMeeting(target);
+                            return;
+                        }
+                    }
+
+                    // 2. 없으면 수정일(updatedAt) 최신순 정렬 후 표시
                     const sorted = [...data].sort(
-                        (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                        (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
                     );
                     setLatestMeeting(sorted[0]);
                 }
@@ -43,7 +49,7 @@ export default function HomePage() {
             }
         };
         fetchMeetings();
-    }, []);
+    }, [state?.meetingId]);
 
     // 슬라이드 데이터 생성
     // participants가 undefined/null일 수 있으므로 ?. 연산자 및 Array.isArray 확인

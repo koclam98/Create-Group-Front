@@ -40,6 +40,7 @@ public class MeetingDto {
         private String desc;
         private String date;  // String으로 변경
         private String location;
+        private List<String> participantIds;
     }
 
     @Getter
