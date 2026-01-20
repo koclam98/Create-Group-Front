@@ -1,70 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
-import { meetingService, type Meeting } from '../services/meetingService';
-import { type Participant } from '../services/participantService';
 import GroupedProfileSlider from '../components/ui/GroupedProfileSlider';
+import { useMeeting } from '../hooks/useMeeting';
+import { useGroupedParticipants } from '../hooks/useGroupedParticipants';
 import '../styles/common.css';
 import '../components/ui/GroupedProfileSlider.css';
 
+/**
+ * 전체 참석자 현황을 그리드 형태로 보여주는 페이지
+ * 기수별 그룹화된 참석자 목록을 슬라이더로 제공
+ */
 export default function ParticipantGridPage() {
     const { id } = useParams<{ id: string }>();
-    const [meeting, setMeeting] = useState<Meeting | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const fetchMeeting = async () => {
-            if (!id) {
-                setError('Meeting ID is missing');
-                setLoading(false);
-                return;
-            }
-
-            try {
-                const data = await meetingService.getById(id);
-                setMeeting(data);
-            } catch (err) {
-                console.error('Failed to fetch meeting:', err);
-                setError('Failed to load meeting data');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchMeeting();
-    }, [id]);
-
-    const getGroupedParticipants = (participants: Participant[] | undefined) => {
-        if (!participants || participants.length === 0) return [];
-
-        const groups: { [key: string]: Participant[] } = {};
-        participants.forEach((p) => {
-            const season = p.season || '기타';
-            if (!groups[season]) {
-                groups[season] = [];
-            }
-            groups[season].push(p);
-        });
-
-        return Object.keys(groups)
-            .sort((a, b) => {
-                const isDigitA = /^\d/.test(a);
-                const isDigitB = /^\d/.test(b);
-
-                if (isDigitA && isDigitB) {
-                    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-                }
-
-                if (isDigitA && !isDigitB) return 1;
-                if (!isDigitA && isDigitB) return -1;
-
-                return a.localeCompare(b);
-            })
-            .map((season) => ({
-                season,
-                participants: groups[season],
-            }));
-    };
+    // 커스텀 훅을 사용하여 데이터 및 로딩 상태 관리
+    const { meeting, loading, error } = useMeeting(id);
+    const groupedData = useGroupedParticipants(meeting?.participants);
 
     if (loading)
         return (
@@ -78,8 +29,6 @@ export default function ParticipantGridPage() {
                 <p className="error-text">{error || '모임을 찾을 수 없습니다.'}</p>
             </div>
         );
-
-    const groupedData = getGroupedParticipants(meeting.participants);
 
     return (
         <main className="main-content">

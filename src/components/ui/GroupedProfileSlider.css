@@ -1,13 +1,22 @@
+/* Wrapper for External Navigation */
+.profile-slider-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+
 .grouped-slider-container {
+    flex: 1;
     width: 100%;
     position: relative;
-    padding: 20px 40px; /* Space for arrows */
-    background-color: #f8f9fa;
+    padding: 20px 40px;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     box-sizing: border-box;
 }
 
+/* Navigation Buttons */
 .slider-header {
     text-align: center;
     margin-bottom: 20px;
@@ -18,18 +27,6 @@
     color: #333;
     font-size: 1.5rem;
     font-weight: bold;
-}
-
-.slider-content {
-    min-height: 300px;
-}
-
-.profiles-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    gap: 20px;
-    justify-items: center;
-    align-items: start;
 }
 
 .profile-card {
@@ -67,36 +64,28 @@
     word-break: keep-all;
 }
 
-/* Navigation Buttons */
-.slider-body {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    position: relative;
-    gap: 20px;
-}
-
 .slider-nav-btn {
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    margin: 0;
     border-radius: 50%;
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: transparent;
+    border: 1px solid #ddd;
+    box-shadow: none;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     z-index: 10;
     transition: all 0.2s;
-    font-size: 1.2rem;
+    font-size: 2rem;
     color: #475569;
     flex-shrink: 0;
 }
 
 .slider-nav-btn:hover {
-    background-color: #f1f5f9;
+    /* background-color: rgba(0, 0, 0, 0.05); */
     color: #0f172a;
 }
 
@@ -111,9 +100,7 @@
 }
 
 .slider-content {
-    flex-grow: 1;
     min-height: 300px;
-    width: 100%;
 }
 
 .profiles-grid {
@@ -122,34 +109,6 @@
     gap: 20px;
     justify-items: center;
     align-items: start;
-}
-
-/* Empty State */
-.no-participants {
-    text-align: center;
-    color: #64748b;
-    padding: 40px 0;
-}
-
-/* Mobile Responsive */
-@media (max-width: 600px) {
-    .grouped-slider-container {
-        padding: 15px 30px;
-    }
-
-    .profiles-grid {
-        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-        gap: 15px;
-    }
-
-    .profile-card {
-        width: 80px;
-    }
-
-    .profile-img {
-        width: 60px;
-        height: 60px;
-    }
 }
 
 /* Large Mode (for full-screen view) */

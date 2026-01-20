@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import '../app/App.css';
 import '../styles/common.css';
 import './HomePage.css';
 import ImageSlider, { type SlideData } from '../features/cast-slider/ImageSlider';
-import { meetingService, type Meeting } from '../services/meetingService';
+import { useMeetingList } from '../hooks/useMeetingList';
 
 const DEFAULT_SLIDES: SlideData[] = [
     {
@@ -21,40 +21,36 @@ const DEFAULT_SLIDES: SlideData[] = [
 
 const PLACEHOLDER_IMAGE = 'https://via.placeholder.com/250?text=No+Image';
 
+/**
+ * 메인 홈 페이지 컴포넌트
+ * 최신 모임 정보를 표시하고 그리드 보기로 이동하는 기능을 제공
+ */
 export default function HomePage() {
     const navigate = useNavigate();
     const location = useLocation();
     const state = location.state as { meetingId?: string } | null;
 
-    const [latestMeeting, setLatestMeeting] = useState<Meeting | null>(null);
+    // 모임 목록 조회 훅 사용
+    const { meetings, loading } = useMeetingList();
 
-    useEffect(() => {
-        const fetchMeetings = async () => {
-            try {
-                const data = await meetingService.getAll();
-                if (data.length === 0) return;
+    // 최신 모임 또는 선택된 모임 정보 계산
+    const latestMeeting = useMemo(() => {
+        if (!meetings || meetings.length === 0) return null;
 
-                // 요청된 meetingId가 있으면 우선 표시
-                if (state?.meetingId) {
-                    const targetMeeting = data.find((m) => m.id === state.meetingId);
-                    if (targetMeeting) {
-                        setLatestMeeting(targetMeeting);
-                        return;
-                    }
-                }
+        // 요청된 meetingId가 있으면 우선 표시
+        if (state?.meetingId) {
+            const targetMeeting = meetings.find((m) => m.id === state.meetingId);
+            if (targetMeeting) return targetMeeting;
+        }
 
-                // 수정일(updatedAt) 최신순 정렬 후 표시
-                const sortedByDate = [...data].sort(
-                    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
-                );
-                setLatestMeeting(sortedByDate[0]);
-            } catch (error) {
-                console.error('Failed to fetch meetings:', error);
-            }
-        };
-        fetchMeetings();
-    }, [state?.meetingId]);
+        // 수정일(updatedAt) 최신순 정렬 후 표시
+        const sortedByDate = [...meetings].sort(
+            (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
+        );
+        return sortedByDate[0];
+    }, [meetings, state?.meetingId]);
 
+    // 슬라이더에 표시할 데이터 변환
     const slides: SlideData[] = latestMeeting?.participants?.length
         ? latestMeeting.participants.map((p) => ({
               image: p.profile?.imageUrl || PLACEHOLDER_IMAGE,
@@ -63,11 +59,17 @@ export default function HomePage() {
           }))
         : DEFAULT_SLIDES;
 
+    /**
+     * 닫기 버튼 핸들러 - 목록 페이지로 이동
+     */
     const handleClose = () => navigate('/list');
+
+    if (loading && !latestMeeting) return <div className="loading-container">Loading...</div>;
 
     return (
         <main className="main-content home-main">
             <h1>{latestMeeting ? latestMeeting.title : '환영합니다!'}</h1>
+            <h3>{latestMeeting ? latestMeeting.desc : ''}</h3>
 
             <div className="home-slider-container">
                 <ImageSlider slides={slides} interval={1000} />

@@ -1,68 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ParticipantService } from '../services/participantService';
-import { profileService } from '../services/profileService';
 import '../app/App.css';
-import { formatPhoneNumber } from '../utils/format';
 import '../styles/common.css';
-
-const DEFAULT_SEASON = '16기';
+import { useParticipantForm } from '../hooks/useParticipantForm';
 
 export default function AddPage() {
     const navigate = useNavigate();
-    const [name, setName] = useState('');
-    const [season, setSeason] = useState(DEFAULT_SEASON);
-    const [phone, setPhone] = useState('');
-    const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
-    const [preview, setPreview] = useState<string | undefined>(undefined);
-
-    // 전화번호 포맷팅 핸들러
-    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const formatted = formatPhoneNumber(e.target.value);
-        setPhone(formatted);
-    };
-
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64String = reader.result as string;
-                setProfileImage(base64String);
-                setPreview(base64String);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    const { name, setName, season, setSeason, phone, handlePhoneChange, preview, handleImageChange, submitForm } =
+        useParticipantForm();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
-        if (!name || !season || !phone) {
-            alert('모든 필수 항목을 입력해주세요.');
-            return;
-        }
-
-        try {
-            const participant = await ParticipantService.create({
-                name,
-                season,
-                phone,
-            });
-
-            if (profileImage) {
-                await profileService.create({
-                    imageUrl: profileImage,
-                    participantId: participant.id,
-                });
-            }
-
-            alert('등록되었습니다!');
-            navigate('/list');
-        } catch (error) {
-            console.error('Failed to create participant:', error);
-            alert('등록에 실패했습니다. 다시 시도해주세요.');
-        }
+        await submitForm();
     };
 
     return (
@@ -73,11 +22,7 @@ export default function AddPage() {
                 <div className="form-group-column">
                     <label className="form-label-centered">프로필 이미지</label>
                     <div className="profile-image-container">
-                        {preview ? (
-                            <img src={preview} alt="Preview" className="profile-image" />
-                        ) : (
-                            <div className="profile-image-placeholder">No Image</div>
-                        )}
+                        <img src={preview || '/default-profile.png'} alt="Profile" className="profile-image" />
                         <input
                             type="file"
                             accept="image/*"

@@ -64,29 +64,29 @@ const GroupedProfileSlider: React.FC<GroupedProfileSliderProps> = ({ groups, siz
     };
 
     return (
-        <div className={`grouped-slider-container ${size}`}>
-            <div className="slider-header">
-                <h2 className="slider-season-title">
-                    {currentGroup.season}
-                    <span
-                        style={{
-                            fontSize: '0.6em',
-                            color: '#666',
-                            marginLeft: '10px',
-                            fontWeight: 'normal',
-                            display: 'block',
-                            marginTop: '5px',
-                        }}
-                    >
-                        {currentGroup.participants.map((p) => p.name).join(', ')}
-                    </span>
-                </h2>
-            </div>
+        <div className="profile-slider-wrapper">
+            <button className="slider-nav-btn nav-prev external-nav" onClick={handlePrev} aria-label="Previous">
+                &#10094;
+            </button>
 
-            <div className="slider-body">
-                <button className="slider-nav-btn nav-prev" onClick={handlePrev} aria-label="Previous">
-                    &#10094;
-                </button>
+            <div className={`grouped-slider-container ${size}`}>
+                <div className="slider-header">
+                    <h2 className="slider-season-title">
+                        {currentGroup.season}
+                        <span
+                            style={{
+                                fontSize: '0.6em',
+                                color: '#666',
+                                marginLeft: '10px',
+                                fontWeight: 'normal',
+                                display: 'block',
+                                marginTop: '5px',
+                            }}
+                        >
+                            (총 {currentGroup.participants.length}명)
+                        </span>
+                    </h2>
+                </div>
 
                 <div className="slider-content">
                     <div className="profiles-grid">
@@ -103,14 +103,14 @@ const GroupedProfileSlider: React.FC<GroupedProfileSliderProps> = ({ groups, siz
                     </div>
                 </div>
 
-                <button className="slider-nav-btn nav-next" onClick={handleNext} aria-label="Next">
-                    &#10095;
-                </button>
+                <div style={{ textAlign: 'center', marginTop: '10px', color: '#888' }}>
+                    {totalPages > 1 && `${pageIndex + 1} / ${totalPages}`}
+                </div>
             </div>
 
-            <div style={{ textAlign: 'center', marginTop: '10px', color: '#888' }}>
-                {totalPages > 1 && `${pageIndex + 1} / ${totalPages}`}
-            </div>
+            <button className="slider-nav-btn nav-next external-nav" onClick={handleNext} aria-label="Next">
+                &#10095;
+            </button>
         </div>
     );
 };

@@ -5,6 +5,17 @@
     position: relative;
 }
 
+.home-main h1 {
+    margin-bottom: 0.5rem;
+}
+
+.home-main h3 {
+    margin-top: 0;
+    margin-bottom: 2rem;
+    color: #555;
+    font-weight: normal;
+}
+
 .home-slider-container {
     width: 100%;
     max-width: 800px;
