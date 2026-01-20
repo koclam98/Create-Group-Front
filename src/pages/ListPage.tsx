@@ -209,12 +209,13 @@ export default function ListPage() {
             header: '프로필',
             accessor: 'profile' as keyof Participant,
             width: 80,
-            render: (row: Participant) =>
-                row.profile?.imageUrl ? (
-                    <img src={row.profile.imageUrl} alt={row.name} className="profile-image-small" />
-                ) : (
-                    <span>-</span>
-                ),
+            render: (row: Participant) => (
+                <img
+                    src={row.profile?.imageUrl || '/default-profile.png'}
+                    alt={row.name}
+                    className="profile-image-small"
+                />
+            ),
         },
         {
             header: '이름',

@@ -1,4 +1,3 @@
-import React from 'react';
 import { useParams } from 'react-router-dom';
 import GroupedProfileSlider from '../components/ui/GroupedProfileSlider';
 import { useMeeting } from '../hooks/useMeeting';

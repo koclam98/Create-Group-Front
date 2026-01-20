@@ -50,12 +50,25 @@ body {
     min-height: 100vh;
     background-color: var(--c-bg);
     color: var(--c-text);
+    user-select: auto;
+    -webkit-user-select: auto;
+}
+
+input, textarea {
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
 }
 
 h1 {
     font-size: 3.2em;
     line-height: 1.1;
     color: var(--c-text);
+}
+
+h3 {
+    font-size: 1.4em;
+    font-weight: bold;
 }
 
 button {

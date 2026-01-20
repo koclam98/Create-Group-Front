@@ -5,6 +5,8 @@ import { profileService } from '../services/profileService';
 import '../app/App.css';
 import '../styles/common.css';
 
+const DEFAULT_PROFILE_IMAGE = '/default-profile.png';
+
 export default function DtlPage() {
     const navigate = useNavigate();
     const { id } = useParams<{ id: string }>();
@@ -75,12 +77,12 @@ export default function DtlPage() {
         try {
             await ParticipantService.update(id, formData);
 
-            if (profileImage) {
-                if (participant.profile) {
-                    await profileService.update(id, { imageUrl: profileImage });
-                } else {
-                    await profileService.create({ imageUrl: profileImage, participantId: id });
-                }
+            // 프로필 이미지 처리: 새로 업로드한 이미지가 있으면 사용, 없으면 기존 이미지 유지 또는 기본 이미지 사용
+            const imageToUse = profileImage || preview || DEFAULT_PROFILE_IMAGE;
+            if (participant.profile) {
+                await profileService.update(id, { imageUrl: imageToUse });
+            } else {
+                await profileService.create({ imageUrl: imageToUse, participantId: id });
             }
 
             alert('수정되었습니다.');

@@ -5,6 +5,7 @@ import { profileService } from '../services/profileService';
 import { formatPhoneNumber } from '../utils/format';
 
 const DEFAULT_SEASON = '16기';
+const DEFAULT_PROFILE_IMAGE = '/default-profile.png';
 
 /**
  * 사용자 등록 폼의 상태와 로직을 관리하는 커스텀 훅
@@ -61,12 +62,12 @@ export function useParticipantForm() {
                 phone,
             });
 
-            if (profileImage) {
-                await profileService.create({
-                    imageUrl: profileImage,
-                    participantId: participant.id,
-                });
-            }
+            // 프로필 이미지가 없으면 기본 이미지 사용
+            const imageToUse = profileImage || DEFAULT_PROFILE_IMAGE;
+            await profileService.create({
+                imageUrl: imageToUse,
+                participantId: participant.id,
+            });
 
             alert('등록되었습니다!');
             navigate('/list');

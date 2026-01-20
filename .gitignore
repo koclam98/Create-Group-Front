@@ -128,3 +128,9 @@ data/
 
 # Claude Code temporary files
 tmpclaude-*
+
+# JRE (stored outside project at D:/jre)
+jre/
+
+# Electron build output
+release/

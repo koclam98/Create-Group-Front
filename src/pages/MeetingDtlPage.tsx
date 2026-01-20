@@ -77,21 +77,6 @@ export default function MeetingDtlPage() {
         fetchData();
     }, [id]);
 
-    const handleUpdate = async () => {
-        if (!id || !meeting) return;
-        try {
-            await meetingService.update(id, formdata);
-
-            alert('수정되었습니다.');
-            const updated = await meetingService.getById(id);
-            setMeeting(updated);
-            navigate('/list');
-        } catch (err) {
-            console.error('Failed to update meeting: ', err);
-            alert('수정실패');
-        }
-    };
-
     const handleMainScreen = async () => {
         if (!id || !meeting) return;
         try {
