@@ -1,0 +1,201 @@
+.grouped-slider-container {
+    width: 100%;
+    position: relative;
+    padding: 20px 40px; /* Space for arrows */
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.slider-header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.slider-season-title {
+    margin: 0;
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.slider-content {
+    min-height: 300px;
+}
+
+.profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 20px;
+    justify-items: center;
+    align-items: start;
+}
+
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    text-align: center;
+}
+
+.profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+    background-color: #e2e8f0;
+}
+
+.default-profile-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    background-color: #cbd5e1;
+    font-size: 2rem;
+}
+
+.profile-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1e293b;
+    word-break: keep-all;
+}
+
+/* Navigation Buttons */
+.slider-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    position: relative;
+    gap: 20px;
+}
+
+.slider-nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: white;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+    font-size: 1.2rem;
+    color: #475569;
+    flex-shrink: 0;
+}
+
+.slider-nav-btn:hover {
+    background-color: #f1f5f9;
+    color: #0f172a;
+}
+
+.slider-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.slider-nav-btn:active {
+    background-color: #e2e8f0;
+    transform: scale(0.95);
+}
+
+.slider-content {
+    flex-grow: 1;
+    min-height: 300px;
+    width: 100%;
+}
+
+.profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Fixed 5 columns */
+    gap: 20px;
+    justify-items: center;
+    align-items: start;
+}
+
+/* Empty State */
+.no-participants {
+    text-align: center;
+    color: #64748b;
+    padding: 40px 0;
+}
+
+/* Mobile Responsive */
+@media (max-width: 600px) {
+    .grouped-slider-container {
+        padding: 15px 30px;
+    }
+
+    .profiles-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 15px;
+    }
+
+    .profile-card {
+        width: 80px;
+    }
+
+    .profile-img {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* Large Mode (for full-screen view) */
+.grouped-slider-container.large {
+    padding: 40px 80px;
+}
+
+.grouped-slider-container.large .slider-season-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.grouped-slider-container.large .profiles-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 40px;
+}
+
+.grouped-slider-container.large .profile-card {
+    width: 180px;
+}
+
+.grouped-slider-container.large .profile-img {
+    width: 150px;
+    height: 150px;
+    border-width: 5px;
+    margin-bottom: 15px;
+}
+
+.grouped-slider-container.large .default-profile-img {
+    font-size: 4rem;
+}
+
+.grouped-slider-container.large .profile-name {
+    font-size: 1.5rem;
+}
+
+.grouped-slider-container.large .slider-nav-btn {
+    width: 60px;
+    height: 60px;
+    font-size: 2rem;
+}
+
+.grouped-slider-container.large .nav-prev {
+    left: 20px;
+}
+
+.grouped-slider-container.large .nav-next {
+    right: 20px;
+}

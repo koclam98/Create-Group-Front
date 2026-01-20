@@ -5,6 +5,7 @@ import AddPage from '../pages/AddPage';
 import DtlPage from '../pages/DtlPage';
 import Layout from '../components/layout/Layout';
 import MeetingDtlPage from '../pages/MeetingDtlPage';
+import ParticipantGridPage from '../pages/ParticipantGridPage';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
                     <Route path="/add" element={<AddPage />} />
                     <Route path="/dtl/:id" element={<DtlPage />} />
                     <Route path="/meetingDtl/:id" element={<MeetingDtlPage />} />
+                    <Route path="/grid/:id" element={<ParticipantGridPage />} />
                 </Route>
             </Routes>
         </BrowserRouter>

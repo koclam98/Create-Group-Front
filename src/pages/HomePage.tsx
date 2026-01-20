@@ -45,7 +45,7 @@ export default function HomePage() {
 
                 // 수정일(updatedAt) 최신순 정렬 후 표시
                 const sortedByDate = [...data].sort(
-                    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+                    (a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime(),
                 );
                 setLatestMeeting(sortedByDate[0]);
             } catch (error) {
@@ -75,6 +75,30 @@ export default function HomePage() {
 
             <button className="close-button" onClick={handleClose}>
                 X
+            </button>
+
+            <button
+                className="grid-view-button"
+                onClick={() => {
+                    if (latestMeeting) {
+                        window.open('/grid/' + latestMeeting.id, '_blank', 'noopener,noreferrer');
+                    }
+                }}
+                style={{
+                    position: 'absolute',
+                    bottom: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    padding: '10px 20px',
+                    backgroundColor: '#007bff',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '20px',
+                    cursor: 'pointer',
+                    zIndex: 1000,
+                }}
+            >
+                전체 참석자 현황 보기
             </button>
         </main>
     );

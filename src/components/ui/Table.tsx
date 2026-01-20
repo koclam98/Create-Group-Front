@@ -12,25 +12,29 @@ interface TableProps<T> {
     columns: Column<T>[];
     data: T[];
     containerStyle?: React.CSSProperties;
+    hideHeader?: boolean;
+    noScroll?: boolean;
 }
 
-export function Table<T>({ columns, data, containerStyle }: TableProps<T>) {
+export function Table<T>({ columns, data, containerStyle, hideHeader, noScroll }: TableProps<T>) {
     return (
         <div className="table-wrapper" style={containerStyle}>
-            <div className="table-header">
-                <table className="custom-table">
-                    <thead>
-                        <tr>
-                            {columns.map((col, idx) => (
-                                <th key={idx} style={{ width: col.width }}>
-                                    {col.header}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-            <div className="table-body">
+            {!hideHeader && (
+                <div className="table-header">
+                    <table className="custom-table">
+                        <thead>
+                            <tr>
+                                {columns.map((col, idx) => (
+                                    <th key={idx} style={{ width: col.width }}>
+                                        {col.header}
+                                    </th>
+                                ))}
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            )}
+            <div className="table-body" style={noScroll ? { maxHeight: 'none', overflowY: 'visible' } : undefined}>
                 <table className="custom-table">
                     <tbody>
                         {data.map((row, rowIdx) => (

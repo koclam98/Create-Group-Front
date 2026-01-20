@@ -125,10 +125,33 @@ export default function ListPage() {
         }
     };
 
-    const filteredParticipants = participants.filter((p) => {
-        const lowerTerm = searchTerm.toLowerCase();
-        return p.name.toLowerCase().includes(lowerTerm) || p.season.toLowerCase().includes(lowerTerm);
-    });
+    // 정렬 함수: 한글(원로회 등) 우선, 그 뒤에 숫자(1회, 2회...) 자연 정렬
+    const customSort = (a: Participant, b: Participant) => {
+        const seasonA = a.season;
+        const seasonB = b.season;
+
+        const isDigitA = /^\d/.test(seasonA);
+        const isDigitB = /^\d/.test(seasonB);
+
+        // 둘 다 숫자로 시작하면 자연 정렬 (1, 2, 10...)
+        if (isDigitA && isDigitB) {
+            return seasonA.localeCompare(seasonB, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        // 하나만 숫자로 시작하면, 숫자가 아닌 쪽(한글)이 앞으로
+        if (isDigitA && !isDigitB) return 1;
+        if (!isDigitA && isDigitB) return -1;
+
+        // 둘 다 문자면 가나다순
+        return seasonA.localeCompare(seasonB);
+    };
+
+    const filteredParticipants = participants
+        .filter((p) => {
+            const lowerTerm = searchTerm.toLowerCase();
+            return p.name.toLowerCase().includes(lowerTerm) || p.season.toLowerCase().includes(lowerTerm);
+        })
+        .sort(customSort);
 
     const isAllSelected = filteredParticipants.length > 0 && selectedIds.length === filteredParticipants.length;
 
@@ -169,12 +192,7 @@ export default function ListPage() {
     const columns = [
         {
             header: (
-                <input
-                    type="checkbox"
-                    checked={isAllSelected}
-                    onChange={handleSelectAll}
-                    className="checkbox-large"
-                />
+                <input type="checkbox" checked={isAllSelected} onChange={handleSelectAll} className="checkbox-large" />
             ),
             accessor: 'id' as keyof Participant,
             width: 50,
@@ -193,11 +211,7 @@ export default function ListPage() {
             width: 80,
             render: (row: Participant) =>
                 row.profile?.imageUrl ? (
-                    <img
-                        src={row.profile.imageUrl}
-                        alt={row.name}
-                        className="profile-image-small"
-                    />
+                    <img src={row.profile.imageUrl} alt={row.name} className="profile-image-small" />
                 ) : (
                     <span>-</span>
                 ),
@@ -207,10 +221,7 @@ export default function ListPage() {
             accessor: 'name' as keyof Participant,
             width: 100,
             render: (row: Participant) => (
-                <span
-                    onClick={() => navigate(`/dtl/${row.id}`)}
-                    className="link-primary"
-                >
+                <span onClick={() => navigate(`/dtl/${row.id}`)} className="link-primary">
                     {row.name}
                 </span>
             ),
@@ -245,10 +256,7 @@ export default function ListPage() {
             accessor: 'title' as keyof Meeting,
             width: 80,
             render: (row: Meeting) => (
-                <span
-                    onClick={() => navigate(`/meetingDtl/${row.id}`)}
-                    className="link-primary"
-                >
+                <span onClick={() => navigate(`/meetingDtl/${row.id}`)} className="link-primary">
                     {row.title}
                 </span>
             ),
@@ -299,10 +307,7 @@ export default function ListPage() {
 
                 <div className="section-actions">
                     {selectedIds.length > 0 && (
-                        <button
-                            onClick={handleDeleteSelected}
-                            className="button-warning"
-                        >
+                        <button onClick={handleDeleteSelected} className="button-warning">
                             선택 삭제 ({selectedIds.length})
                         </button>
                     )}
@@ -318,9 +323,7 @@ export default function ListPage() {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="form-input-large"
                     />
-                    <button className="button-primary">
-                        검색
-                    </button>
+                    <button className="button-primary">검색</button>
                 </div>
 
                 {participants.length === 0 ? (
@@ -362,9 +365,7 @@ export default function ListPage() {
 
                             {selectedParticipants.length > 0 && (
                                 <div className="modal-selected-list">
-                                    <p className="modal-selected-title">
-                                        선택 참여자 ({selectedParticipants.length})
-                                    </p>
+                                    <p className="modal-selected-title">선택 참여자 ({selectedParticipants.length})</p>
                                     <ul className="modal-participant-list">
                                         {selectedParticipants.map((p) => (
                                             <li key={p.id} className="modal-participant-item">
@@ -375,16 +376,10 @@ export default function ListPage() {
                                 </div>
                             )}
                             <div className="modal-actions">
-                                <button
-                                    onClick={handleCloseModal}
-                                    className="button-secondary"
-                                >
+                                <button onClick={handleCloseModal} className="button-secondary">
                                     취소
                                 </button>
-                                <button
-                                    onClick={handleCreateMeeting}
-                                    className="button-primary"
-                                >
+                                <button onClick={handleCreateMeeting} className="button-primary">
                                     등록
                                 </button>
                             </div>
@@ -398,10 +393,7 @@ export default function ListPage() {
 
                 <div className="section-actions">
                     {selectedMeetingIds.length > 0 && (
-                        <button
-                            onClick={handleDeleteSelectedMeetings}
-                            className="button-warning"
-                        >
+                        <button onClick={handleDeleteSelectedMeetings} className="button-warning">
                             선택 삭제 ({selectedMeetingIds.length})
                         </button>
                     )}

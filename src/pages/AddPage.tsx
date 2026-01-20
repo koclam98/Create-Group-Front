@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ParticipantService } from '../services/participantService';
 import { profileService } from '../services/profileService';
 import '../app/App.css';
+import { formatPhoneNumber } from '../utils/format';
 import '../styles/common.css';
 
 const DEFAULT_SEASON = '16기';
@@ -14,6 +15,12 @@ export default function AddPage() {
     const [phone, setPhone] = useState('');
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
     const [preview, setPreview] = useState<string | undefined>(undefined);
+
+    // 전화번호 포맷팅 핸들러
+    const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const formatted = formatPhoneNumber(e.target.value);
+        setPhone(formatted);
+    };
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -67,15 +74,9 @@ export default function AddPage() {
                     <label className="form-label-centered">프로필 이미지</label>
                     <div className="profile-image-container">
                         {preview ? (
-                            <img
-                                src={preview}
-                                alt="Preview"
-                                className="profile-image"
-                            />
+                            <img src={preview} alt="Preview" className="profile-image" />
                         ) : (
-                            <div className="profile-image-placeholder">
-                                No Image
-                            </div>
+                            <div className="profile-image-placeholder">No Image</div>
                         )}
                         <input
                             type="file"
@@ -122,9 +123,10 @@ export default function AddPage() {
                         id="phone"
                         type="text"
                         value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
+                        onChange={handlePhoneChange}
                         className="form-input"
                         placeholder="010-0000-0000"
+                        maxLength={13}
                     />
                 </div>
 
@@ -132,11 +134,7 @@ export default function AddPage() {
                     <button type="submit" className="button-flex-1">
                         등록하기
                     </button>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/list')}
-                        className="button-flex-1"
-                    >
+                    <button type="button" onClick={() => navigate('/list')} className="button-flex-1">
                         취소
                     </button>
                 </div>

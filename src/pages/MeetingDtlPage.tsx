@@ -31,7 +31,7 @@ export default function MeetingDtlPage() {
     const [searchParti, setSearchParti] = useState('');
 
     const filteredNonAttendees = nonAttendees.filter(
-        (p) => p.name.includes(searchTerm) || p.season.includes(searchTerm)
+        (p) => p.name.includes(searchTerm) || p.season.includes(searchTerm),
     );
 
     const filteredAttendees = attendees.filter((p) => p.name.includes(searchParti) || p.season.includes(searchParti));
@@ -223,6 +223,64 @@ export default function MeetingDtlPage() {
     const isAllNonAttendeesSelected =
         filteredNonAttendees.length > 0 && selectedNonAttendeeIds.length === filteredNonAttendees.length;
 
+    // 참가자 그룹핑 함수
+    const groupParticipantsBySeason = (participants: Participant[]) => {
+        const groups: { [key: string]: Participant[] } = {};
+        participants.forEach((p) => {
+            const season = p.season || '기타';
+            if (!groups[season]) {
+                groups[season] = [];
+            }
+            groups[season].push(p);
+        });
+        return Object.keys(groups)
+            .sort((a, b) => {
+                const isDigitA = /^\d/.test(a);
+                const isDigitB = /^\d/.test(b);
+
+                if (isDigitA && isDigitB) {
+                    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+                }
+
+                if (isDigitA && !isDigitB) return 1;
+                if (!isDigitA && isDigitB) return -1;
+
+                return a.localeCompare(b);
+            })
+            .map((season) => ({
+                season,
+                participants: groups[season],
+            }));
+    };
+
+    const groupedAttendees = groupParticipantsBySeason(filteredAttendees);
+    const groupedNonAttendees = groupParticipantsBySeason(filteredNonAttendees);
+
+    const commonColumns = (
+        isAllSelected: boolean,
+        onSelectAll: (e: React.ChangeEvent<HTMLInputElement>) => void,
+        itemIds: string[],
+        onSelectRow: (id: string) => void,
+    ) => [
+        {
+            header: (
+                <input type="checkbox" checked={isAllSelected} onChange={onSelectAll} className="checkbox-medium" />
+            ),
+            accessor: 'id' as keyof Participant,
+            width: '15%',
+            render: (row: Participant) => (
+                <input
+                    type="checkbox"
+                    checked={itemIds.includes(row.id)}
+                    onChange={() => onSelectRow(row.id)}
+                    className="checkbox-medium"
+                />
+            ),
+        },
+        { header: '이름', accessor: 'name' as keyof Participant, width: '55%' },
+        { header: '기수', accessor: 'season' as keyof Participant, width: '30%' },
+    ];
+
     if (loading) {
         return (
             <main className="main-content loading-container">
@@ -311,34 +369,62 @@ export default function MeetingDtlPage() {
                             </button>
                         </div>
                     </div>
-                    <Table
-                        columns={[
-                            {
-                                header: (
-                                    <input
-                                        type="checkbox"
-                                        checked={isAllAttendeesSelected}
-                                        onChange={handleSelectAllAttendees}
-                                        className="checkbox-medium"
+                    <div className="table-container" style={{ width: '80%' }}>
+                        <div
+                            style={{
+                                maxHeight: '380px',
+                                overflowY: 'auto',
+                                borderRadius: '8px',
+                            }}
+                        >
+                            {/* Sticky Header */}
+                            <div style={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff' }}>
+                                <Table
+                                    columns={commonColumns(
+                                        isAllAttendeesSelected,
+                                        handleSelectAllAttendees,
+                                        selectedAttendeeIds,
+                                        handleSelectAttendeeRow,
+                                    )}
+                                    data={[]}
+                                    containerStyle={{
+                                        width: '100%',
+                                        borderRadius: 0,
+                                        borderBottom: '1px solid #e2e8f0',
+                                    }}
+                                    noScroll={true}
+                                />
+                            </div>
+                            {/* Grouped Tables */}
+                            {groupedAttendees.map((group) => (
+                                <div key={group.season}>
+                                    <div
+                                        style={{
+                                            padding: '8px 16px',
+                                            backgroundColor: '#f1f5f9',
+                                            fontWeight: 'bold',
+                                            borderLeft: '4px solid #007bff',
+                                            borderBottom: '1px solid #e2e8f0',
+                                        }}
+                                    >
+                                        {group.season} ({group.participants.length})
+                                    </div>
+                                    <Table
+                                        columns={commonColumns(
+                                            isAllAttendeesSelected,
+                                            handleSelectAllAttendees,
+                                            selectedAttendeeIds,
+                                            handleSelectAttendeeRow,
+                                        )}
+                                        data={group.participants}
+                                        containerStyle={{ width: '100%', borderRadius: 0 }}
+                                        hideHeader={true}
+                                        noScroll={true}
                                     />
-                                ),
-                                accessor: 'id',
-                                width: 30,
-                                render: (row: Participant) => (
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedAttendeeIds.includes(row.id)}
-                                        onChange={() => handleSelectAttendeeRow(row.id)}
-                                        className="checkbox-medium"
-                                    />
-                                ),
-                            },
-                            { header: '이름', accessor: 'name', width: 60 },
-                            { header: '기수', accessor: 'season', width: 40 },
-                        ]}
-                        data={filteredAttendees}
-                        containerStyle={{ width: '80%' }}
-                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
 
                 <div className="section-half">
@@ -365,34 +451,62 @@ export default function MeetingDtlPage() {
                             </button>
                         </div>
                     </div>
-                    <Table
-                        columns={[
-                            {
-                                header: (
-                                    <input
-                                        type="checkbox"
-                                        checked={isAllNonAttendeesSelected}
-                                        onChange={handleSelectAllNonAttendees}
-                                        className="checkbox-medium"
+                    <div className="table-container" style={{ width: '80%' }}>
+                        <div
+                            style={{
+                                maxHeight: '380px',
+                                overflowY: 'auto',
+                                borderRadius: '8px',
+                            }}
+                        >
+                            {/* Sticky Header */}
+                            <div style={{ position: 'sticky', top: 0, zIndex: 10, backgroundColor: '#fff' }}>
+                                <Table
+                                    columns={commonColumns(
+                                        isAllNonAttendeesSelected,
+                                        handleSelectAllNonAttendees,
+                                        selectedNonAttendeeIds,
+                                        handleSelectNonAttendeeRow,
+                                    )}
+                                    data={[]}
+                                    containerStyle={{
+                                        width: '100%',
+                                        borderRadius: 0,
+                                        borderBottom: '1px solid #e2e8f0',
+                                    }}
+                                    noScroll={true}
+                                />
+                            </div>
+                            {/* Grouped Tables */}
+                            {groupedNonAttendees.map((group) => (
+                                <div key={group.season}>
+                                    <div
+                                        style={{
+                                            padding: '8px 16px',
+                                            backgroundColor: '#f1f5f9',
+                                            fontWeight: 'bold',
+                                            borderLeft: '4px solid #6c757d',
+                                            borderBottom: '1px solid #e2e8f0',
+                                        }}
+                                    >
+                                        {group.season} ({group.participants.length})
+                                    </div>
+                                    <Table
+                                        columns={commonColumns(
+                                            isAllNonAttendeesSelected,
+                                            handleSelectAllNonAttendees,
+                                            selectedNonAttendeeIds,
+                                            handleSelectNonAttendeeRow,
+                                        )}
+                                        data={group.participants}
+                                        containerStyle={{ width: '100%', borderRadius: 0 }}
+                                        hideHeader={true}
+                                        noScroll={true}
                                     />
-                                ),
-                                accessor: 'id',
-                                width: 30,
-                                render: (row: Participant) => (
-                                    <input
-                                        type="checkbox"
-                                        checked={selectedNonAttendeeIds.includes(row.id)}
-                                        onChange={() => handleSelectNonAttendeeRow(row.id)}
-                                        className="checkbox-medium"
-                                    />
-                                ),
-                            },
-                            { header: '이름', accessor: 'name', width: 60 },
-                            { header: '기수', accessor: 'season', width: 40 },
-                        ]}
-                        data={filteredNonAttendees}
-                        containerStyle={{ width: '80%' }}
-                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
