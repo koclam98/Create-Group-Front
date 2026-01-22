@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { ParticipantService } from '../services/participantService';
 import { profileService } from '../services/profileService';
 import { formatPhoneNumber } from '../utils/format';
@@ -12,7 +11,6 @@ const DEFAULT_PROFILE_IMAGE = './default-profile.png';
  * @returns 폼 상태값들과 핸들러 함수들
  */
 export function useParticipantForm() {
-    const navigate = useNavigate();
     const [name, setName] = useState('');
     const [season, setSeason] = useState(DEFAULT_SEASON);
     const [phone, setPhone] = useState('');
@@ -50,8 +48,7 @@ export function useParticipantForm() {
      */
     const submitForm = async () => {
         if (!name || !season || !phone) {
-            alert('모든 필수 항목을 입력해주세요.');
-            return;
+            throw new Error('모든 필수 항목을 입력해주세요.');
         }
 
         try {
@@ -69,11 +66,10 @@ export function useParticipantForm() {
                 participantId: participant.id,
             });
 
-            alert('등록되었습니다!');
-            navigate('/list');
+            // 성공 시 아무것도 반환하지 않음 (호출 측에서 처리)
         } catch (error) {
             console.error('Failed to create participant:', error);
-            alert('등록에 실패했습니다. 다시 시도해주세요.');
+            throw new Error('등록에 실패했습니다. 다시 시도해주세요.');
         } finally {
             setLoading(false);
         }

@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table } from '../components/ui/Table';
 import { ParticipantService, type Meeting, type Participant } from '../services/participantService';
 import { meetingService } from '../services/meetingService';
 import '../app/App.css';
 import '../styles/common.css';
+import AlertModal from '../components/ui/AlertModal';
 
 const DEFAULT_MEETING_DESC = '환영합니다.';
 const DEFAULT_LOCATION = '서울';
@@ -21,6 +22,27 @@ export default function ListPage() {
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [selectedMeetingIds, setSelectedMeetingIds] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
+    const meetingNameInputRef = useRef<HTMLInputElement>(null);
+
+    // Alert Modal State
+    const [isAlertOpen, setIsAlertOpen] = useState(false);
+    const [alertTitle, setAlertTitle] = useState('');
+    const [alertMessage, setAlertMessage] = useState('');
+    const [onAlertClose, setOnAlertClose] = useState<(() => void) | undefined>(undefined);
+
+    const openAlert = (title: string, message: string, onClose?: () => void) => {
+        setAlertTitle(title);
+        setAlertMessage(message);
+        setOnAlertClose(() => onClose);
+        setIsAlertOpen(true);
+    };
+
+    const handleAlertClose = () => {
+        setIsAlertOpen(false);
+        if (onAlertClose) {
+            onAlertClose();
+        }
+    };
 
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => {
@@ -28,14 +50,34 @@ export default function ListPage() {
         setMeetingName('');
     };
 
+    useEffect(() => {
+        if (isModalOpen && meetingNameInputRef.current) {
+            // Electron 환경을 위해 더 긴 지연 시간 사용
+            const timeoutId = setTimeout(() => {
+                const input = meetingNameInputRef.current;
+                if (input) {
+                    // blur/focus 사이클로 입력 활성화
+                    input.blur();
+                    setTimeout(() => {
+                        input.focus();
+                        input.select();
+                        // 클릭 이벤트로 강제 활성화
+                        input.click();
+                    }, 50);
+                }
+            }, 200);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [isModalOpen]);
+
     const handleCreateMeeting = async () => {
         if (!meetingName.trim()) {
-            alert('모임 이름을 입력해주세요.');
+            openAlert('알림', '모임 이름을 입력해주세요.');
             return;
         }
 
         if (selectedIds.length === 0) {
-            alert('참여자를 선택해주세요.');
+            openAlert('알림', '참여자를 선택해주세요.');
             return;
         }
 
@@ -48,13 +90,14 @@ export default function ListPage() {
                 participantIds: selectedIds,
             });
 
-            alert(`'${meetingName}' 모임이 생성되었습니다!`);
-            navigate(`/meetingDtl/${newMeeting.id}`, { state: { isNew: true } });
-            handleCloseModal();
-            setSelectedIds([]);
+            openAlert('알림', `'${meetingName}' 모임이 생성되었습니다!`, () => {
+                handleCloseModal();
+                setSelectedIds([]);
+                navigate(`/meetingDtl/${newMeeting.id}`, { state: { isNew: true } });
+            });
         } catch (error) {
             console.error('Failed to create meeting:', error);
-            alert('모임 생성에 실패했습니다.');
+            openAlert('오류', '모임 생성에 실패했습니다.');
         }
     };
 
@@ -89,7 +132,7 @@ export default function ListPage() {
 
     const handleDeleteSelected = async () => {
         if (selectedIds.length === 0) {
-            alert('삭제할 참여자를 선택해주세요.');
+            openAlert('알림', '삭제할 참여자를 선택해주세요.');
             return;
         }
 
@@ -98,17 +141,17 @@ export default function ListPage() {
                 await Promise.all(selectedIds.map((id) => ParticipantService.delete(id)));
                 setSelectedIds([]);
                 await loadData();
-                alert('삭제 되었습니다.');
+                openAlert('알림', '삭제 되었습니다.');
             } catch (err) {
                 console.error('Failed to delete participants:', err);
-                alert('삭제에 실패했습니다.');
+                openAlert('오류', '삭제에 실패했습니다.');
             }
         }
     };
 
     const handleDeleteSelectedMeetings = async () => {
         if (selectedMeetingIds.length === 0) {
-            alert('삭제할 모임을 선택해주세요.');
+            openAlert('알림', '삭제할 모임을 선택해주세요.');
             return;
         }
 
@@ -117,10 +160,10 @@ export default function ListPage() {
                 await Promise.all(selectedMeetingIds.map((id) => meetingService.delete(id)));
                 setSelectedMeetingIds([]);
                 await loadData();
-                alert('삭제 되었습니다.');
+                openAlert('알림', '삭제 되었습니다.');
             } catch (err) {
                 console.error('Failed to delete meetings:', err);
-                alert('삭제에 실패했습니다.');
+                openAlert('오류', '삭제에 실패했습니다.');
             }
         }
     };
@@ -355,13 +398,13 @@ export default function ListPage() {
                                     모임 이름
                                 </label>
                                 <input
+                                    ref={meetingNameInputRef}
                                     id="meetingName"
                                     type="text"
                                     value={meetingName}
                                     onChange={(e) => setMeetingName(e.target.value)}
                                     placeholder="모임 이름을 입력하세요"
                                     className="form-input-large"
-                                    autoFocus
                                 />
                             </div>
 
@@ -419,6 +462,8 @@ export default function ListPage() {
                     />
                 )}
             </section>
+
+            <AlertModal isOpen={isAlertOpen} title={alertTitle} message={alertMessage} onClose={handleAlertClose} />
         </main>
     );
 }

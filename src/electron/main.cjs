@@ -77,26 +77,39 @@ function createWindow() {
 
     mainWindow.loadURL(startUrl);
 
-    // 개발자 도구 열기 (임시 - 디버깅용)
-    mainWindow.webContents.openDevTools();
+    // 개발자 도구 열기 (환경 변수로 제어)
+    if (process.env.ENABLE_DEV_TOOLS === 'true') {
+        mainWindow.webContents.openDevTools();
+    }
 
     // 윈도우가 로드되면 로그 파일 경로를 콘솔에 표시
     mainWindow.webContents.on('did-finish-load', () => {
+        // 페이지 로드 후 포커스 설정
         setTimeout(() => {
-            if (logFilePath) {
-                const escapedPath = logFilePath.replace(/\\/g, '\\\\');
-                mainWindow.webContents.executeJavaScript(`
-                    console.clear();
-                    console.log('%c===========================================', 'color: blue; font-weight: bold;');
-                    console.log('%c📋 서버 로그 파일 위치', 'color: blue; font-weight: bold; font-size: 16px;');
-                    console.log('%c===========================================', 'color: blue; font-weight: bold;');
-                    console.log('%c${escapedPath}', 'color: green; font-size: 14px; background: #f0f0f0; padding: 5px;');
-                    console.log('%c===========================================', 'color: blue; font-weight: bold;');
-                    console.log('%c탐색기에서 위 경로를 열어서 spring-boot.log 파일을 확인하세요.', 'color: orange; font-size: 12px;');
-                    console.log('%c===========================================', 'color: blue; font-weight: bold;');
-                `).catch(err => console.error('Failed to show log path:', err));
-            }
-        }, 1000);
+            mainWindow.focus();
+            mainWindow.webContents.focus();
+        }, 100);
+
+        if (logFilePath) {
+            const escapedPath = logFilePath.replace(/\\/g, '\\\\');
+            mainWindow.webContents.executeJavaScript(`
+                console.log('%c===========================================', 'color: blue; font-weight: bold;');
+                console.log('%c📋 서버 로그 파일 위치', 'color: blue; font-weight: bold; font-size: 16px;');
+                console.log('%c===========================================', 'color: blue; font-weight: bold;');
+                console.log('%c${escapedPath}', 'color: green; font-size: 14px; background: #f0f0f0; padding: 5px;');
+                console.log('%c===========================================', 'color: blue; font-weight: bold;');
+                console.log('%c탐색기에서 위 경로를 열어서 spring-boot.log 파일을 확인하세요.', 'color: orange; font-size: 12px;');
+                console.log('%c===========================================', 'color: blue; font-weight: bold;');
+            `).catch(err => console.error('Failed to show log path:', err));
+        }
+    });
+
+    // 페이지 네비게이션 시에도 포커스 복구
+    mainWindow.webContents.on('did-navigate', () => {
+        setTimeout(() => {
+            mainWindow.focus();
+            mainWindow.webContents.focus();
+        }, 100);
     });
 
     mainWindow.on('close', () => {

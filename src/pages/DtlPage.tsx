@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ParticipantService, type Participant } from '../services/participantService';
 import { profileService } from '../services/profileService';
 import '../app/App.css';
 import '../styles/common.css';
+import defaultProfile from '../assets/default-profile.png';
+import AlertModal from '../components/ui/AlertModal';
 
-const DEFAULT_PROFILE_IMAGE = './default-profile.png';
+const DEFAULT_PROFILE_IMAGE = defaultProfile;
 
 export default function DtlPage() {
     const navigate = useNavigate();
@@ -21,6 +23,13 @@ export default function DtlPage() {
     });
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
     const [preview, setPreview] = useState<string | undefined>(undefined);
+    const nameInputRef = useRef<HTMLInputElement>(null);
+
+    // Modal State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [onModalClose, setOnModalClose] = useState<(() => void) | undefined>(undefined);
 
     useEffect(() => {
         const fetchParticipant = async () => {
@@ -28,6 +37,7 @@ export default function DtlPage() {
                 setLoading(false);
                 return;
             }
+
             try {
                 setLoading(true);
                 const data = await ParticipantService.getById(id);
@@ -51,6 +61,25 @@ export default function DtlPage() {
         fetchParticipant();
     }, [id]);
 
+    useEffect(() => {
+        if (!loading && nameInputRef.current) {
+            const timeoutId = setTimeout(() => {
+                const input = nameInputRef.current;
+                if (input) {
+                    // blur/focus 사이클로 입력 활성화
+                    input.blur();
+                    setTimeout(() => {
+                        input.focus();
+                        input.select();
+                        // 클릭 이벤트로 강제 활성화
+                        input.click();
+                    }, 50);
+                }
+            }, 200);
+            return () => clearTimeout(timeoutId);
+        }
+    }, [loading]);
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({
@@ -72,8 +101,35 @@ export default function DtlPage() {
         }
     };
 
+    const openModal = (title: string, message: string, onClose?: () => void) => {
+        setModalTitle(title);
+        setModalMessage(message);
+        setOnModalClose(() => onClose); // 함수형 업데이트 방지
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        if (onModalClose) {
+            onModalClose();
+        }
+    };
+
     const handleUpdate = async () => {
         if (!id || !participant) return;
+
+        if (!formData.name.trim()) {
+            openModal('알림', '이름을 입력해주세요.');
+            return;
+        }
+        if (!formData.season.trim()) {
+            openModal('알림', '기수를 입력해주세요.');
+            return;
+        }
+        if (!formData.phone.trim()) {
+            openModal('알림', '연락처를 입력해주세요.');
+            return;
+        }
         try {
             await ParticipantService.update(id, formData);
 
@@ -85,13 +141,14 @@ export default function DtlPage() {
                 await profileService.create({ imageUrl: imageToUse, participantId: id });
             }
 
-            alert('수정되었습니다.');
+            openModal('알림', '수정되었습니다.', () => {
+                navigate('/list');
+            });
             const updated = await ParticipantService.getById(id);
             setParticipant(updated);
-            navigate('/list');
         } catch (err) {
             console.error('Failed to update participant:', err);
-            alert('수정 실패');
+            openModal('오류', '수정 실패');
         }
     };
 
@@ -139,6 +196,7 @@ export default function DtlPage() {
                 <div className="form-group">
                     <label className="form-label-short">이름 :</label>
                     <input
+                        ref={nameInputRef}
                         type="text"
                         name="name"
                         value={formData.name}
@@ -166,6 +224,8 @@ export default function DtlPage() {
                         value={formData.phone}
                         onChange={handleInputChange}
                         className="form-input-editable"
+                        placeholder="010-0000-0000"
+                        maxLength={13}
                     />
                 </div>
 
@@ -178,6 +238,8 @@ export default function DtlPage() {
                     </button>
                 </div>
             </div>
+
+            <AlertModal isOpen={isModalOpen} title={modalTitle} message={modalMessage} onClose={handleModalClose} />
         </main>
     );
 }

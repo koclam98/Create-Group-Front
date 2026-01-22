@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../app/App.css';
 import '../styles/common.css';
 import { useParticipantForm } from '../hooks/useParticipantForm';
+import AlertModal from '../components/ui/AlertModal';
 
 const defaultProfile = './default-profile.png';
 
@@ -10,10 +11,55 @@ export default function AddPage() {
     const navigate = useNavigate();
     const { name, setName, season, setSeason, phone, handlePhoneChange, preview, handleImageChange, submitForm } =
         useParticipantForm();
+    const nameInputRef = useRef<HTMLInputElement>(null);
+
+    // Modal State
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [modalTitle, setModalTitle] = useState('');
+    const [modalMessage, setModalMessage] = useState('');
+    const [onModalClose, setOnModalClose] = useState<(() => void) | undefined>(undefined);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            const input = nameInputRef.current;
+            if (input) {
+                // blur/focus 사이클로 입력 활성화
+                input.blur();
+                setTimeout(() => {
+                    input.focus();
+                    input.select();
+                    // 클릭 이벤트로 강제 활성화
+                    input.click();
+                }, 50);
+            }
+        }, 200);
+        return () => clearTimeout(timeoutId);
+    }, []);
+
+    const openModal = (title: string, message: string, onClose?: () => void) => {
+        setModalTitle(title);
+        setModalMessage(message);
+        setOnModalClose(() => onClose); // 함수형 업데이트 방지
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        if (onModalClose) {
+            onModalClose();
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        await submitForm();
+        try {
+            await submitForm();
+            openModal('알림', '등록되었습니다!', () => {
+                navigate('/list');
+            });
+        } catch (error: any) {
+            openModal('오류', error.message || '등록에 실패했습니다.');
+        }
     };
 
     return (
@@ -39,6 +85,7 @@ export default function AddPage() {
                         이름 :
                     </label>
                     <input
+                        ref={nameInputRef}
                         id="name"
                         type="text"
                         value={name}
@@ -86,6 +133,8 @@ export default function AddPage() {
                     </button>
                 </div>
             </form>
+
+            <AlertModal isOpen={isModalOpen} title={modalTitle} message={modalMessage} onClose={handleModalClose} />
         </main>
     );
 }

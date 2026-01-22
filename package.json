@@ -12,8 +12,8 @@
         "preview": "vite preview",
         "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && cross-env ELECTRON_START_URL=http://localhost:5173 electron .\"",
         "electron:build": "npm run build && electron-builder",
-        "package": "npm run build && electron-builder build --win --publish never",
-        "package:test": "npm run build && cross-env ENABLE_DEV_TOOLS=true electron-builder build --win --publish never"
+        "package": "npm run build:clean && npx electron-builder build --win --publish never",
+        "package:test": "npm run build:clean && cross-env ENABLE_DEV_TOOLS=true npx electron-builder build --win --publish never"
     },
     "build": {
         "appId": "com.example.meeting",
