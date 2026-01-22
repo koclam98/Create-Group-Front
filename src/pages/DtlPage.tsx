@@ -5,7 +5,7 @@ import { profileService } from '../services/profileService';
 import '../app/App.css';
 import '../styles/common.css';
 
-const DEFAULT_PROFILE_IMAGE = '/default-profile.png';
+const DEFAULT_PROFILE_IMAGE = './default-profile.png';
 
 export default function DtlPage() {
     const navigate = useNavigate();
@@ -123,15 +123,9 @@ export default function DtlPage() {
                     <label className="form-label-centered">프로필 이미지</label>
                     <div className="profile-image-container">
                         {preview ? (
-                            <img
-                                src={preview}
-                                alt={participant.name}
-                                className="profile-image"
-                            />
+                            <img src={preview} alt={participant.name} className="profile-image" />
                         ) : (
-                            <div className="profile-image-placeholder">
-                                No Image
-                            </div>
+                            <div className="profile-image-placeholder">No Image</div>
                         )}
                         <input
                             type="file"

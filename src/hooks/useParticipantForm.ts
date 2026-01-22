@@ -5,7 +5,7 @@ import { profileService } from '../services/profileService';
 import { formatPhoneNumber } from '../utils/format';
 
 const DEFAULT_SEASON = '16기';
-const DEFAULT_PROFILE_IMAGE = '/default-profile.png';
+const DEFAULT_PROFILE_IMAGE = './default-profile.png';
 
 /**
  * 사용자 등록 폼의 상태와 로직을 관리하는 커스텀 훅

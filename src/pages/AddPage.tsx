@@ -4,6 +4,8 @@ import '../app/App.css';
 import '../styles/common.css';
 import { useParticipantForm } from '../hooks/useParticipantForm';
 
+const defaultProfile = './default-profile.png';
+
 export default function AddPage() {
     const navigate = useNavigate();
     const { name, setName, season, setSeason, phone, handlePhoneChange, preview, handleImageChange, submitForm } =
@@ -22,7 +24,7 @@ export default function AddPage() {
                 <div className="form-group-column">
                     <label className="form-label-centered">프로필 이미지</label>
                     <div className="profile-image-container">
-                        <img src={preview || '/default-profile.png'} alt="Profile" className="profile-image" />
+                        <img src={preview || defaultProfile} alt="Profile" className="profile-image" />
                         <input
                             type="file"
                             accept="image/*"

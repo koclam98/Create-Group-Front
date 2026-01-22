@@ -211,7 +211,7 @@ export default function ListPage() {
             width: 80,
             render: (row: Participant) => (
                 <img
-                    src={row.profile?.imageUrl || '/default-profile.png'}
+                    src={row.profile?.imageUrl || './default-profile.png'}
                     alt={row.name}
                     className="profile-image-small"
                 />
@@ -361,6 +361,7 @@ export default function ListPage() {
                                     onChange={(e) => setMeetingName(e.target.value)}
                                     placeholder="모임 이름을 입력하세요"
                                     className="form-input-large"
+                                    autoFocus
                                 />
                             </div>
 

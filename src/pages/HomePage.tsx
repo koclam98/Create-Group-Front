@@ -83,7 +83,7 @@ export default function HomePage() {
                 className="grid-view-button"
                 onClick={() => {
                     if (latestMeeting) {
-                        window.open('/grid/' + latestMeeting.id, '_blank', 'noopener,noreferrer');
+                        window.open('#/grid/' + latestMeeting.id, '_blank', 'noopener,noreferrer');
                     }
                 }}
                 style={{
