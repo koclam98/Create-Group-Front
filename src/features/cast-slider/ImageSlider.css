@@ -1,6 +1,6 @@
 .slider-container {
     width: 100%;
-    max-width: 800px;
+    max-width: 1200px;
     margin: 0 auto;
     position: relative;
     overflow: hidden;
@@ -10,8 +10,9 @@
 .slider-wrapper {
     position: relative;
     width: 100%;
-    height: 550px; /* Fixed height to accommodate image + text */
+    height: 650px; /* Fixed height to accommodate image + text */
     margin-bottom: 2rem;
+    margin-top: 3rem;
 }
 
 .slide {
@@ -31,8 +32,9 @@
 }
 
 .slide img {
-    width: 350px;
-    height: 350px;
+    width: 500px;
+    height: 500px;
+    flex-shrink: 0; /* Prevent image from shrinking */
     object-fit: cover;
     border-radius: 50%; /* Circular Image */
     border: 4px solid var(--c-accent); /* Accent border */
