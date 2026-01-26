@@ -72,7 +72,7 @@ export default function HomePage() {
             <h3>{latestMeeting ? latestMeeting.desc : ''}</h3>
 
             <div className="home-slider-container">
-                <ImageSlider slides={slides} interval={1000} />
+                <ImageSlider slides={slides} interval={1700} />
             </div>
 
             <button className="close-button" onClick={handleClose}>
@@ -87,10 +87,8 @@ export default function HomePage() {
                     }
                 }}
                 style={{
-                    position: 'absolute',
-                    bottom: '20px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
+                    marginTop: '2rem',
+                    marginBottom: '2rem',
                     padding: '10px 20px',
                     backgroundColor: '#007bff',
                     color: 'white',

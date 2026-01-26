@@ -54,7 +54,8 @@ body {
     -webkit-user-select: auto;
 }
 
-input, textarea {
+input,
+textarea {
     pointer-events: auto !important;
     user-select: text !important;
     -webkit-user-select: text !important;
@@ -67,7 +68,7 @@ h1 {
 }
 
 h3 {
-    font-size: 1.4em;
+    font-size: 2em;
     font-weight: bold;
 }
 
