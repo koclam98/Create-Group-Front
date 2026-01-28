@@ -252,7 +252,7 @@ export default function MeetingDtlPage() {
                 <input type="checkbox" checked={isAllSelected} onChange={onSelectAll} className="checkbox-medium" />
             ),
             accessor: 'id' as keyof Participant,
-            width: '15%',
+            width: '10%',
             render: (row: Participant) => (
                 <input
                     type="checkbox"
@@ -262,7 +262,8 @@ export default function MeetingDtlPage() {
                 />
             ),
         },
-        { header: '이름', accessor: 'name' as keyof Participant, width: '55%' },
+        { header: '이름', accessor: 'name' as keyof Participant, width: '30%' },
+        { header: '직함', accessor: 'position' as keyof Participant, width: '30%' },
         { header: '기수', accessor: 'season' as keyof Participant, width: '30%' },
     ];
 

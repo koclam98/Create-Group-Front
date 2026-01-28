@@ -1,0 +1,114 @@
+/* 전체 래퍼 */
+.paged-grid-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    width: 100%;
+}
+.paged-grid-container {
+    flex: 1;
+    width: 100%;
+    position: relative;
+    padding: 20px 40px;
+    border-radius: 12px;
+    box-sizing: border-box;
+    /* 배경이 필요하다면 추가, 예: background-color: #f8fafc; */
+}
+/* 그리드 레이아웃 (한 줄에 5명씩) */
+.paged-profiles-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20px;
+    justify-items: center;
+    align-items: start;
+    min-height: 300px; /* 최소 높이 확보 */
+}
+/* 프로필 카드 스타일 */
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+    text-align: center;
+}
+.profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 8px;
+    background-color: #e2e8f0;
+}
+.default-profile-img {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    background-color: #cbd5e1;
+    font-size: 2rem;
+}
+.profile-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1e293b;
+    word-break: keep-all;
+}
+.profile-profile {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1e293b;
+    word-break: keep-all;
+}
+.profile-season {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #1e293b;
+    word-break: keep-all;
+}
+/* 네비게이션 버튼 */
+.nav-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: transparent;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2rem;
+    color: #475569;
+    flex-shrink: 0;
+    transition: all 0.2s;
+}
+.nav-btn:hover:not(:disabled) {
+    color: #0f172a;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+.nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+/* 페이지 번호 */
+.page-indicator {
+    text-align: center;
+    margin-top: 20px;
+    color: #888;
+    font-size: 0.9rem;
+}
+/* 반응형 (모바일) */
+@media (max-width: 768px) {
+    .paged-profiles-grid {
+        grid-template-columns: repeat(3, 1fr); /* 모바일에서는 3열 */
+    }
+    .profile-img {
+        width: 80px;
+        height: 80px;
+    }
+    .paged-grid-container {
+        padding: 10px;
+    }
+}

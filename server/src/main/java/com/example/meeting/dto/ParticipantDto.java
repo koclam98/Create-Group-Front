@@ -34,6 +34,12 @@ public class ParticipantDto {
         private String season;
 
         /**
+         * 참여자의 직함 (필수)
+         */
+        @NotBlank(message = "직함은 필수 입니다.")
+        private String position;
+
+        /**
          * 참여자의 전화번호 (필수, 고유해야 함)
          */
         @NotBlank(message = "연락처는 필수입니다")
@@ -61,6 +67,11 @@ public class ParticipantDto {
         private String season;
 
         /**
+         * 수정할 직함 (선택 사항)
+         */
+        private String position;
+
+        /**
          * 수정할 전화번호 (선택 사항)
          */
         private String phone;
@@ -86,6 +97,11 @@ public class ParticipantDto {
          * 참여자의 이름
          */
         private String name;
+
+        /**
+         * 참여자의 직함
+         */
+        private String position;
 
         /**
          * 참여자의 기수 또는 코호트
@@ -122,6 +138,7 @@ public class ParticipantDto {
             return Response.builder()
                     .id(participant.getId())
                     .name(participant.getName())
+                    .position(participant.getPosition())
                     .season(participant.getSeason())
                     .phone(participant.getPhone())
                     .profile(participant.getProfile() != null ?

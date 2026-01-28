@@ -270,7 +270,8 @@ export default function ListPage() {
                 </span>
             ),
         },
-        { header: '기수', accessor: 'season' as keyof Participant, width: 100 },
+        { header: '직함', accessor: 'position' as keyof Participant, width: 80 },
+        { header: '기수', accessor: 'season' as keyof Participant, width: 80 },
         { header: '연락처', accessor: 'phone' as keyof Participant, width: 100 },
     ];
 

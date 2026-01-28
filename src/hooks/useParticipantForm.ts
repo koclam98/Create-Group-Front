@@ -12,6 +12,7 @@ const DEFAULT_PROFILE_IMAGE = './default-profile.png';
  */
 export function useParticipantForm() {
     const [name, setName] = useState('');
+    const [position, setPosition] = useState('');
     const [season, setSeason] = useState(DEFAULT_SEASON);
     const [phone, setPhone] = useState('');
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
@@ -55,6 +56,7 @@ export function useParticipantForm() {
             setLoading(true);
             const participant = await ParticipantService.create({
                 name,
+                position,
                 season,
                 phone,
             });
@@ -78,6 +80,8 @@ export function useParticipantForm() {
     return {
         name,
         setName,
+        position,
+        setPosition,
         season,
         setSeason,
         phone,

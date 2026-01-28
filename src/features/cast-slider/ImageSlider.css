@@ -52,14 +52,19 @@
 }
 
 .slide-title {
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: bold;
     margin: 0 0 0.5rem 0;
     color: var(--c-accent); /* Highlight title */
 }
 
+.slide-position {
+    font-size: 1.7rem;
+    color: var(--c-accent);
+}
+
 .slide-description {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     margin: 0;
     line-height: 1.6;
     opacity: 0.9;
@@ -90,11 +95,15 @@
     }
 
     .slide-title {
-        font-size: 1.5rem;
+        font-size: 3rem;
+    }
+
+    .slide-position {
+        font-size: 1.7rem;
     }
 
     .slide-description {
-        font-size: 1rem;
+        font-size: 1.7rem;
         padding: 0 1rem; /* Prevent text touching edges */
     }
 }

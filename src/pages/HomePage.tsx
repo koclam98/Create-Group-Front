@@ -10,11 +10,13 @@ const DEFAULT_SLIDES: SlideData[] = [
     {
         image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80',
         title: '함께하는 즐거움',
+        position: '사원',
         description: '다양한 사람들과 만나보세요',
     },
     {
         image: 'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80',
         title: '새로운 경험',
+        position: '사원',
         description: '매일 새로운 모임이 기다립니다',
     },
 ];
@@ -55,6 +57,7 @@ export default function HomePage() {
         ? latestMeeting.participants.map((p) => ({
               image: p.profile?.imageUrl || PLACEHOLDER_IMAGE,
               title: p.name || '이름 없음',
+              position: p.position || '',
               description: p.season || '',
           }))
         : DEFAULT_SLIDES;

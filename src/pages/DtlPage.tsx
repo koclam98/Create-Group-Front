@@ -18,12 +18,14 @@ export default function DtlPage() {
 
     const [formData, setFormData] = useState({
         name: '',
+        position: '',
         season: '',
         phone: '',
     });
     const [profileImage, setProfileImage] = useState<string | undefined>(undefined);
     const [preview, setPreview] = useState<string | undefined>(undefined);
     const nameInputRef = useRef<HTMLInputElement>(null);
+    const positionInputRef = useRef<HTMLInputElement>(null);
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -44,6 +46,7 @@ export default function DtlPage() {
                 setParticipant(data);
                 setFormData({
                     name: data.name,
+                    position: data.position,
                     season: data.season,
                     phone: data.phone,
                 });
@@ -120,6 +123,10 @@ export default function DtlPage() {
 
         if (!formData.name.trim()) {
             openModal('알림', '이름을 입력해주세요.');
+            return;
+        }
+        if (!formData.position.trim()) {
+            openModal('알림', '직합을 입력해주세요.');
             return;
         }
         if (!formData.season.trim()) {
@@ -200,6 +207,18 @@ export default function DtlPage() {
                         type="text"
                         name="name"
                         value={formData.name}
+                        onChange={handleInputChange}
+                        className="form-input-editable"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label className="form-label-short">직함 :</label>
+                    <input
+                        ref={positionInputRef}
+                        type="text"
+                        name="position"
+                        value={formData.position}
                         onChange={handleInputChange}
                         className="form-input-editable"
                     />

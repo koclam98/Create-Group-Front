@@ -1,20 +1,16 @@
+// src/pages/ParticipantGridPage.tsx
 import { useParams } from 'react-router-dom';
-import GroupedProfileSlider from '../components/ui/GroupedProfileSlider';
+import PagedProfileGrid from '../components/ui/PagedProfileGrid'; // 변경됨
 import { useMeeting } from '../hooks/useMeeting';
-import { useGroupedParticipants } from '../hooks/useGroupedParticipants';
+// import { useGroupedParticipants } from '../hooks/useGroupedParticipants'; // 제거 (불필요)
 import '../styles/common.css';
-import '../components/ui/GroupedProfileSlider.css';
+// import '../components/ui/GroupedProfileSlider.css'; // 제거 (새 컴포넌트 내부에서 CSS import 함)
 
-/**
- * 전체 참석자 현황을 그리드 형태로 보여주는 페이지
- * 기수별 그룹화된 참석자 목록을 슬라이더로 제공
- */
 export default function ParticipantGridPage() {
     const { id } = useParams<{ id: string }>();
 
-    // 커스텀 훅을 사용하여 데이터 및 로딩 상태 관리
     const { meeting, loading, error } = useMeeting(id);
-    const groupedData = useGroupedParticipants(meeting?.participants);
+    // const groupedData = useGroupedParticipants(meeting?.participants); // 제거
 
     if (loading)
         return (
@@ -31,10 +27,12 @@ export default function ParticipantGridPage() {
 
     return (
         <main className="main-content">
-            <h1 className="section-header">{meeting.title} - 기수별 명단</h1>
+            <h1 className="section-header">{meeting.title}</h1>
 
             <div className="home-slider-container">
-                <GroupedProfileSlider groups={groupedData} />
+                {/* 기존 GroupedProfileSlider 대신 PagedProfileGrid 사용 */}
+                {/* meeting.participants를 바로 넘겨줍니다. 없을 경우 빈 배열 전달 */}
+                <PagedProfileGrid participants={meeting.participants || []} />
             </div>
         </main>
     );

@@ -56,16 +56,18 @@ public class ParticipantService {
      * @throws DuplicateResourceException 전화번호가 이미 존재하는 경우
      */
     @Transactional
+    @SuppressWarnings("null")
     public ParticipantDto.Response create(ParticipantDto.Create dto) {
         validatePhoneNotDuplicate(dto.getPhone());
 
         Participant participant = Participant.builder()
                 .name(dto.getName())
+                .position(dto.getPosition())
                 .season(dto.getSeason())
                 .phone(dto.getPhone())
                 .build();
 
-        Participant saved = participantRepository.save(participant);
+        Participant saved = java.util.Objects.requireNonNull(participantRepository.save(participant));
         return ParticipantDto.Response.from(saved);
     }
 
@@ -84,6 +86,9 @@ public class ParticipantService {
 
         if (dto.getName() != null) {
             participant.setName(dto.getName());
+        }
+        if (dto.getPosition() != null) {
+            participant.setPosition(dto.getPosition());
         }
         if (dto.getSeason() != null) {
             participant.setSeason(dto.getSeason());

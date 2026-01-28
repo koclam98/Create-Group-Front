@@ -9,9 +9,21 @@ const defaultProfile = './default-profile.png';
 
 export default function AddPage() {
     const navigate = useNavigate();
-    const { name, setName, season, setSeason, phone, handlePhoneChange, preview, handleImageChange, submitForm } =
-        useParticipantForm();
+    const {
+        name,
+        setName,
+        position,
+        setPosition,
+        season,
+        setSeason,
+        phone,
+        handlePhoneChange,
+        preview,
+        handleImageChange,
+        submitForm,
+    } = useParticipantForm();
     const nameInputRef = useRef<HTMLInputElement>(null);
+    const positionInputRef = useRef<HTMLInputElement>(null);
 
     // Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -92,6 +104,21 @@ export default function AddPage() {
                         onChange={(e) => setName(e.target.value)}
                         className="form-input"
                         placeholder="이름을 입력하세요"
+                    />
+                </div>
+
+                <div className="form-group">
+                    <label htmlFor="position" className="form-label-short">
+                        직함 :
+                    </label>
+                    <input
+                        ref={positionInputRef}
+                        id="name"
+                        type="text"
+                        value={position}
+                        onChange={(e) => setPosition(e.target.value)}
+                        className="form-input"
+                        placeholder="직함을 입력하세요"
                     />
                 </div>
 

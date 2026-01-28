@@ -36,6 +36,12 @@ public class Participant {
     private String name;
 
     /**
+     * 참여자의 직함
+     */
+    @Column(nullable = false)
+    private String position;
+
+    /**
      * 참여자가 속한 기수 또는 코호트
      */
     @Column(nullable = false)

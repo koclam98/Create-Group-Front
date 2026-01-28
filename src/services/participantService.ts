@@ -5,6 +5,7 @@ export type { Meeting };
 export interface Participant {
     id: string;
     name: string;
+    position: string;
     season: string;
     phone: string;
     profile?: Profile;
@@ -31,12 +32,12 @@ export const ParticipantService = {
         return response.data;
     },
     // 참여자 생성
-    create: async (data: { name: string; season: string; phone: string }) => {
+    create: async (data: { name: string; position: string; season: string; phone: string }) => {
         const response = await api.post<Participant>('/participants', data);
         return response.data;
     },
     // 참여자 수정
-    update: async (id: string, data: Partial<{ name: string; season: string; phone: string }>) => {
+    update: async (id: string, data: Partial<{ name: string; position: string; season: string; phone: string }>) => {
         const response = await api.patch<Participant>(`/participants/${id}`, data);
         return response.data;
     },

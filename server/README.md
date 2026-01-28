@@ -35,11 +35,11 @@ java -jar build/libs/meeting-0.0.1-SNAPSHOT.jar
 
 ## 서버 정보
 
-- 서버 포트: `http://localhost:3000`
-- H2 콘솔: `http://localhost:3000/h2-console`
-  - JDBC URL: `jdbc:h2:file:./data/meeting`
-  - Username: `sa`
-  - Password: (비어있음)
+- 서버 포트: `http://localhost:8084`
+- H2 콘솔: `http://localhost:8084/h2-console`
+    - JDBC URL: `jdbc:h2:file:./data/meeting`
+    - Username: `sa`
+    - Password: (비어있음)
 
 ## API 엔드포인트
 
@@ -99,6 +99,7 @@ src/main/java/com/example/meeting/
 ## 데이터베이스 스키마
 
 ### Participant (참여자)
+
 - id: String (UUID, PK)
 - name: String
 - season: String
@@ -107,11 +108,13 @@ src/main/java/com/example/meeting/
 - updatedAt: LocalDateTime
 
 ### Profile (프로필)
+
 - id: String (UUID, PK)
 - imageUrl: String (Text)
 - participantId: String (FK, Unique)
 
 ### Meeting (모임)
+
 - id: String (UUID, PK)
 - title: String
 - desc: String (Text)
