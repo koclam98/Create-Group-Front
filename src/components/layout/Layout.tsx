@@ -4,9 +4,10 @@ import '../../app/App.css'; // Global styles
 export default function Layout() {
     const location = useLocation();
     const isHomePage = location.pathname === '/';
+    const isListPage = location.pathname === '/list';
 
     return (
-        <div className="app">
+        <div className={`app ${!isListPage ? 'fixed-layout' : ''}`}>
             <Outlet />
             {!isHomePage && (
                 <footer className="footer">

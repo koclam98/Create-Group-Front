@@ -10,6 +10,19 @@
     box-sizing: border-box;
 }
 
+/* Fixed layout for non-list pages to prevent window scroll */
+.fixed-layout {
+    height: 100vh;
+    overflow: hidden;
+}
+
+.fixed-layout .main-content {
+    flex: 1;
+    overflow-y: auto; /* Internal scrolling */
+    width: 100%;
+    /* Ensure content has some padding if needed, but main-content already has it via .app inheritance or structure */
+}
+
 .main-content {
     flex: 1; /* Takes up remaining space */
     display: flex;
