@@ -7,7 +7,7 @@ interface PagedProfileGridProps {
     participants: Participant[];
 }
 
-const ITEMS_PER_PAGE = 20;
+const ITEMS_PER_PAGE = 18;
 
 const PagedProfileGrid: React.FC<PagedProfileGridProps> = ({ participants }) => {
     const [pageIndex, setPageIndex] = useState(0);

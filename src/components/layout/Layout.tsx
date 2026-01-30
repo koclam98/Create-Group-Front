@@ -4,10 +4,15 @@ import '../../app/App.css'; // Global styles
 export default function Layout() {
     const location = useLocation();
     const isHomePage = location.pathname === '/';
-    const isListPage = location.pathname === '/list';
+    const isScrollablePage =
+        location.pathname === '/list' ||
+        location.pathname.startsWith('/meetingDtl') ||
+        location.pathname.startsWith('/grid') ||
+        location.pathname === '/add' ||
+        location.pathname.startsWith('/dtl');
 
     return (
-        <div className={`app ${isListPage ? 'scrollable-layout' : 'fixed-layout'}`}>
+        <div className={`app ${isScrollablePage ? 'scrollable-layout' : 'fixed-layout'}`}>
             <Outlet />
             {!isHomePage && (
                 <footer className="footer">

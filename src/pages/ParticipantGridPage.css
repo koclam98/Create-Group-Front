@@ -1,0 +1,27 @@
+/* src/pages/ParticipantGridPage.css */
+
+.participant-grid-container {
+    width: 100%;
+    max-width: 95vw;
+    /* 넓은 화면 사용 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 0;
+    margin: 0 auto;
+    /* 중앙 정렬 */
+    flex-direction: column;
+}
+
+.main-content h1.section-header {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+/* 모바일 대응 */
+@media (max-width: 768px) {
+    .participant-grid-container {
+        padding: 1rem 0;
+        max-width: 98vw;
+    }
+}

@@ -3,7 +3,7 @@ import { ParticipantService } from '../services/participantService';
 import { profileService } from '../services/profileService';
 import { formatPhoneNumber } from '../utils/format';
 
-const DEFAULT_SEASON = '16기';
+const DEFAULT_SEASON = '40회';
 const DEFAULT_PROFILE_IMAGE = './default-profile.png';
 
 /**
