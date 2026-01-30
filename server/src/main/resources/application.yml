@@ -23,10 +23,10 @@ spring:
                 dialect: org.hibernate.dialect.H2Dialect
 
 server:
-    port: 8084
+    port: 9999
 
 cors:
-    allowed-origins: http://localhost:5173
+    allowed-origin-patterns: '*'
     allowed-methods: GET,POST,PUT,PATCH,DELETE,OPTIONS
     allowed-headers: '*'
     allow-credentials: true

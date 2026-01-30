@@ -75,7 +75,7 @@ export default function HomePage() {
             <h3>{latestMeeting ? latestMeeting.desc : ''}</h3>
 
             <div className="home-slider-container">
-                <ImageSlider slides={slides} interval={1700} />
+                <ImageSlider slides={slides} interval={3000} />
             </div>
 
             <button className="close-button" onClick={handleClose}>
