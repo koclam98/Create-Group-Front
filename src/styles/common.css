@@ -3,51 +3,62 @@
 /* Form Styles */
 .form-container {
     width: 100%;
-    max-width: 500px;
+    max-width: 40vw;
+    /* Changed from 500px */
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5vw;
+    /* Changed from 1rem */
 }
 
 .form-group {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 1.5vw;
+    /* Changed from 1rem */
 }
 
 .form-group-column {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2vw;
+    /* Changed from 1.5rem */
 }
 
 .form-label {
-    width: 100px;
+    width: 8vw;
+    /* Changed from 100px */
     text-align: right;
     font-weight: bold;
     color: var(--c-text);
+    font-size: 1.1vw;
 }
 
 .form-label-short {
-    width: 80px;
+    width: 6vw;
+    /* Changed from 80px */
     text-align: right;
     font-weight: bold;
     color: var(--c-text);
+    font-size: 1.1vw;
 }
 
 .form-label-centered {
-    margin-right: 1rem;
-    margin-bottom: 0.5rem;
+    margin-right: 1.5vw;
+    margin-bottom: 0.8vw;
     font-weight: bold;
     color: var(--c-text);
+    font-size: 1.1vw;
 }
 
 .form-input {
     flex: 1;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 4px;
+    padding: 0.8vw;
+    /* Changed from 0.5rem */
+    font-size: 1.1vw;
+    /* Changed from 1rem */
+    border-radius: 0.4vw;
     border: 1px solid #ccc;
     box-sizing: border-box;
     pointer-events: auto !important;
@@ -57,9 +68,9 @@
 
 .form-input-editable {
     flex: 1;
-    padding: 0.5rem;
-    font-size: 1rem;
-    border-radius: 4px;
+    padding: 0.8vw;
+    font-size: 1.1vw;
+    border-radius: 0.4vw;
     border: 1px solid #ccc;
     background-color: #ffffff;
     color: #333;
@@ -70,9 +81,11 @@
 
 .form-input-large {
     width: 60%;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border-radius: 4px;
+    padding: 1.2vw;
+    /* Changed from 0.8rem */
+    font-size: 1.2vw;
+    /* Changed from 1rem */
+    border-radius: 0.4vw;
     border: 1px solid #ccc;
     box-sizing: border-box;
     pointer-events: auto !important;
@@ -88,47 +101,70 @@
 }
 
 .profile-image {
-    width: 120px;
-    height: 120px;
+    width: 12vw;
+    /* Changed from 120px */
+    height: auto;
+    /* Changed from 120px, relying on aspect-ratio */
     border-radius: 50%;
     object-fit: cover;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5vw;
+    /* Changed from 1rem */
     border: 2px solid #ddd;
+    /* Circular Protection */
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
 }
 
 .profile-image-small {
-    width: 40px;
-    height: 40px;
+    width: 4vw;
+    /* Changed from 40px */
+    height: auto;
+    /* Changed from 40px */
     border-radius: 50%;
     object-fit: cover;
+    /* Circular Protection */
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
 }
 
 .profile-image-placeholder {
-    width: 120px;
-    height: 120px;
+    width: 12vw;
+    /* Changed from 120px */
+    height: auto;
+    /* Changed from 120px */
     border-radius: 50%;
     background-color: #eee;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5vw;
+    /* Changed from 1rem */
+    /* Circular Protection */
+    aspect-ratio: 1 / 1;
+    flex-shrink: 0;
+
     display: flex;
     align-items: center;
     justify-content: center;
     color: #888;
+    font-size: 1.2vw;
 }
 
 .profile-image-upload {
-    margin-left: 2rem;
+    margin-left: 2vw;
+    /* Changed from 2rem */
 }
 
 /* Button Styles */
 .button-group {
     display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
+    gap: 1.5vw;
+    /* Changed from 1rem */
+    margin-top: 1.5vw;
+    /* Changed from 1rem */
 }
 
 .button-group-flex {
     display: flex;
-    gap: 1rem;
+    gap: 1.5vw;
+    /* Changed from 1rem */
 }
 
 .button-flex-1 {
@@ -139,42 +175,59 @@
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 0.8rem 1.5rem;
+    border-radius: 0.4vw;
+    /* Changed from 4px */
+    padding: 1vw 2vw;
+    /* Changed from 0.8rem 1.5rem */
     cursor: pointer;
+    font-size: 1.1vw;
 }
 
 .button-secondary {
     background-color: #6c757d;
     color: white;
     border: none;
-    border-radius: 4px;
-    padding: 0.6em 1.2em;
+    border-radius: 0.4vw;
+    /* Changed from 4px */
+    padding: 0.8vw 1.5vw;
+    /* Changed from 0.6em 1.2em */
+    font-size: 1.1vw;
 }
 
 .button-warning {
     background-color: #ffc107;
     color: black;
     border-color: #ffc107;
+    border-radius: 0.4vw;
+    padding: 0.8vw 1.5vw;
+    font-size: 1.1vw;
 }
 
 .button-danger {
     background-color: #dc3545;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.4vw;
+    /* Changed from 4px */
+    padding: 0.8vw 1.5vw;
+    font-size: 1.1vw;
 }
 
 .button-success {
     background-color: #28a745;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.4vw;
+    /* Changed from 4px */
+    padding: 0.8vw 1.5vw;
+    font-size: 1.1vw;
 }
 
 .button-small {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.6vw 1.2vw;
+    /* Changed from 0.5rem 1rem */
+    font-size: 1vw;
+    /* Changed from 0.9rem */
 }
 
 .button-disabled {
@@ -184,14 +237,18 @@
 
 /* Checkbox Styles */
 .checkbox-large {
-    width: 20px;
-    height: 20px;
+    width: 2.2vw;
+    /* Changed from 20px */
+    height: 2.2vw;
+    /* Changed from 20px */
     cursor: pointer;
 }
 
 .checkbox-medium {
-    width: 18px;
-    height: 18px;
+    width: 2vw;
+    /* Changed from 18px */
+    height: 2vw;
+    /* Changed from 18px */
     cursor: pointer;
 }
 
@@ -440,6 +497,7 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
+
     .form-label,
     .form-label-short {
         width: 70px;

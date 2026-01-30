@@ -1,22 +1,29 @@
 .custom-table {
     width: 100%;
     border-collapse: collapse;
-    background-color: var(--c-surface); /* White */
+    background-color: var(--c-surface);
+    /* White */
 }
 
 .custom-table th {
-    background-color: var(--c-bg); /* Light Slate */
+    background-color: var(--c-bg);
+    /* Light Slate */
     color: var(--c-text);
     font-weight: 600;
     text-align: left;
-    padding: 1rem;
-    border-bottom: 2px solid var(--c-accent); /* Accent Color Line */
+    padding: 1.2vw;
+    /* Changed from 1rem */
+    border-bottom: 2px solid var(--c-accent);
+    /* Accent Color Line */
+    font-size: 1.1vw;
 }
 
 .custom-table td {
-    padding: 1rem;
+    padding: 1.2vw;
+    /* Changed from 1rem */
     border-bottom: 1px solid #e2e8f0;
     color: var(--c-text);
+    font-size: 1.1vw;
 }
 
 .custom-table tr:hover {
@@ -25,7 +32,8 @@
 
 /* Table wrapper with fixed header */
 .table-wrapper {
-    border-radius: 8px;
+    border-radius: 0.8vw;
+    /* Changed from 8px */
     overflow: hidden;
 }
 
@@ -36,7 +44,8 @@
 .table-body {
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: 380px;
+    max-height: 40vw;
+    /* Changed from 380px */
 }
 
 /* Ensure both tables have the same layout */
@@ -47,9 +56,12 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 600px) {
+
     .custom-table th,
     .custom-table td {
-        padding: 0.75rem 0.5rem; /* Less padding */
-        font-size: 0.9rem; /* Smaller text */
+        padding: 0.75rem 0.5rem;
+        /* Less padding */
+        font-size: 0.9rem;
+        /* Smaller text */
     }
 }

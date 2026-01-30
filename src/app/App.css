@@ -5,8 +5,10 @@
     flex-direction: column;
     align-items: center;
     /* Removed justify-content: center to allow footer sourcing */
-    padding: 2rem;
-    background-color: var(--c-bg); /* Solid Deep Navy */
+    padding: 3vw;
+    /* Changed from 2rem */
+    background-color: var(--c-bg);
+    /* Solid Deep Navy */
     box-sizing: border-box;
 }
 
@@ -18,13 +20,26 @@
 
 .fixed-layout .main-content {
     flex: 1;
-    overflow-y: auto; /* Internal scrolling */
+    overflow: hidden;
+    /* Prevent internal scroll by default */
     width: 100%;
-    /* Ensure content has some padding if needed, but main-content already has it via .app inheritance or structure */
+}
+
+/* Scrollable layout for ListPage */
+.scrollable-layout {
+    height: 100vh;
+    overflow-y: auto;
+    /* Allow scrolling */
+}
+
+.scrollable-layout .main-content {
+    flex: 1;
+    width: 100%;
 }
 
 .main-content {
-    flex: 1; /* Takes up remaining space */
+    flex: 1;
+    /* Takes up remaining space */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -32,7 +47,8 @@
 }
 
 .footer {
-    margin-top: auto; /* Pushes footer to bottom if needed, though flex:1 on main handles it */
+    margin-top: auto;
+    /* Pushes footer to bottom if needed, though flex:1 on main handles it */
     padding-top: 2rem;
     color: var(--c-text);
     font-size: 0.875rem;
@@ -42,9 +58,11 @@
 
 .main-content h1 {
     color: var(--c-accent);
-    font-size: 3.5rem;
+    font-size: 5vw;
+    /* Changed from 3.5rem */
     font-weight: 800;
-    margin-bottom: 2.5rem;
+    margin-bottom: 4vw;
+    /* Changed from 2.5rem */
     text-transform: uppercase;
     letter-spacing: -0.025em;
     text-align: center;
@@ -57,7 +75,8 @@
     }
 
     .main-content h1 {
-        font-size: 2rem; /* Smaller title on mobile */
+        font-size: 2rem;
+        /* Smaller title on mobile */
         margin-bottom: 1.5rem;
     }
 

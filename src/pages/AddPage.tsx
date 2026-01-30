@@ -132,7 +132,7 @@ export default function AddPage() {
                         value={season}
                         onChange={(e) => setSeason(e.target.value)}
                         className="form-input"
-                        placeholder="예: 16"
+                        placeholder="예: 40회"
                     />
                 </div>
 

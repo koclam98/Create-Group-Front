@@ -7,7 +7,7 @@ export default function Layout() {
     const isListPage = location.pathname === '/list';
 
     return (
-        <div className={`app ${!isListPage ? 'fixed-layout' : ''}`}>
+        <div className={`app ${isListPage ? 'scrollable-layout' : 'fixed-layout'}`}>
             <Outlet />
             {!isHomePage && (
                 <footer className="footer">

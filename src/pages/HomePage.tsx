@@ -55,11 +55,11 @@ export default function HomePage() {
     // 슬라이더에 표시할 데이터 변환
     const slides: SlideData[] = latestMeeting?.participants?.length
         ? latestMeeting.participants.map((p) => ({
-              image: p.profile?.imageUrl || PLACEHOLDER_IMAGE,
-              title: p.name || '이름 없음',
-              position: p.position || '',
-              description: p.season || '',
-          }))
+            image: p.profile?.imageUrl || PLACEHOLDER_IMAGE,
+            title: p.name || '이름 없음',
+            position: p.position || '',
+            description: p.season || '',
+        }))
         : DEFAULT_SLIDES;
 
     /**
@@ -88,17 +88,6 @@ export default function HomePage() {
                     if (latestMeeting) {
                         window.open('#/grid/' + latestMeeting.id, '_blank', 'noopener,noreferrer');
                     }
-                }}
-                style={{
-                    marginTop: '2rem',
-                    marginBottom: '2rem',
-                    padding: '10px 20px',
-                    backgroundColor: '#007bff',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '20px',
-                    cursor: 'pointer',
-                    zIndex: 1000,
                 }}
             >
                 전체 참석자 현황 보기

@@ -2,10 +2,12 @@
 
 .list-main {
     justify-content: flex-start;
-    gap: 4rem;
+    gap: 5vw;
+    /* Changed from 4rem */
 }
 
 .list-table-container {
     width: 90%;
-    max-width: 800px;
+    max-width: 80vw;
+    /* Changed from 800px */
 }

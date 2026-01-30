@@ -1,22 +1,67 @@
 /* HomePage Specific Styles */
 
 .home-main {
-    justify-content: flex-start;
+    justify-content: center;
+    /* Center vertically */
     position: relative;
+    height: 100%;
+    /* Ensure it takes full height */
+    overflow: hidden;
+    /* Ensure no scroll */
+    padding-top: 0 !important;
+    /* Override App padding if needed to center */
 }
 
 .home-main h1 {
-    margin-bottom: 0.5rem;
+    margin-bottom: 1vw;
+    /* Override App.css */
+    font-size: 5vw;
+    /* Changed from 6vw */
+    margin-top: 0;
 }
 
 .home-main h3 {
     margin-top: 0;
-    margin-bottom: 2rem;
+    margin-bottom: 2vw;
+    /* Changed from 2rem */
     color: #555;
     font-weight: normal;
+    font-size: 1.8vw;
+    /* Decreased from 2vw */
 }
 
 .home-slider-container {
     width: 100%;
-    max-width: 1200px;
+    max-width: 60vw;
+    /* Changed from 70vw */
+    flex: 1;
+    /* Allow it to take available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 0;
+    /* Important for flex child to shrink */
+}
+
+.grid-view-button {
+    margin-top: 1vw;
+    /* Changed from 2vw */
+    margin-bottom: 1vw;
+    padding: 0.8vw 1.6vw;
+    /* Reduced padding */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 2vw;
+    cursor: pointer;
+    z-index: 1000;
+    font-size: 1vw;
+    /* Changed from 1.2vw */
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+}
+
+.grid-view-button:hover {
+    transform: translateY(-2px);
 }
