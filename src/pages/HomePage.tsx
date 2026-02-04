@@ -5,6 +5,7 @@ import '../styles/common.css';
 import './HomePage.css';
 import ImageSlider, { type SlideData } from '../features/cast-slider/ImageSlider';
 import { useMeetingList } from '../hooks/useMeetingList';
+import { compareSeasons, compareParticipants } from '../utils/sortUtils';
 
 const DEFAULT_SLIDES: SlideData[] = [
     {
@@ -54,12 +55,12 @@ export default function HomePage() {
 
     // 슬라이더에 표시할 데이터 변환
     const slides: SlideData[] = latestMeeting?.participants?.length
-        ? latestMeeting.participants.map((p) => ({
-            image: p.profile?.imageUrl || PLACEHOLDER_IMAGE,
-            title: p.name || '이름 없음',
-            position: p.position || '',
-            description: p.season || '',
-        }))
+        ? [...latestMeeting.participants].sort(compareParticipants).map((p) => ({
+              image: p.profile?.imageUrl || PLACEHOLDER_IMAGE,
+              title: p.name || '이름 없음',
+              position: p.position || '',
+              description: p.season || '',
+          }))
         : DEFAULT_SLIDES;
 
     /**

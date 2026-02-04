@@ -6,6 +6,7 @@ import { meetingService } from '../services/meetingService';
 import '../app/App.css';
 import '../styles/common.css';
 import AlertModal from '../components/ui/AlertModal';
+import { compareParticipants } from '../utils/sortUtils';
 
 const DEFAULT_MEETING_DESC = '환영합니다.';
 const DEFAULT_LOCATION = '서울';
@@ -168,25 +169,9 @@ export default function ListPage() {
         }
     };
 
-    // 정렬 함수: 한글(원로회 등) 우선, 그 뒤에 숫자(1회, 2회...) 자연 정렬
+    // 정렬 함수: 한글(원로회 등) 우선, 그 뒤에 숫자(1회, 2회...) 자연 정렬 + 이름 정렬
     const customSort = (a: Participant, b: Participant) => {
-        const seasonA = a.season;
-        const seasonB = b.season;
-
-        const isDigitA = /^\d/.test(seasonA);
-        const isDigitB = /^\d/.test(seasonB);
-
-        // 둘 다 숫자로 시작하면 자연 정렬 (1, 2, 10...)
-        if (isDigitA && isDigitB) {
-            return seasonA.localeCompare(seasonB, undefined, { numeric: true, sensitivity: 'base' });
-        }
-
-        // 하나만 숫자로 시작하면, 숫자가 아닌 쪽(한글)이 앞으로
-        if (isDigitA && !isDigitB) return 1;
-        if (!isDigitA && isDigitB) return -1;
-
-        // 둘 다 문자면 가나다순
-        return seasonA.localeCompare(seasonB);
+        return compareParticipants(a, b);
     };
 
     const filteredParticipants = participants

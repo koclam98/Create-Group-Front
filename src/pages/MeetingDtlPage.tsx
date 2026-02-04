@@ -5,6 +5,7 @@ import '../app/App.css';
 import '../styles/common.css';
 import { ParticipantService, type Participant, type Meeting } from '../services/participantService';
 import { meetingService } from '../services/meetingService';
+import { compareSeasons } from '../utils/sortUtils';
 
 export default function MeetingDtlPage() {
     const navigate = useNavigate();
@@ -219,22 +220,10 @@ export default function MeetingDtlPage() {
             groups[season].push(p);
         });
         return Object.keys(groups)
-            .sort((a, b) => {
-                const isDigitA = /^\d/.test(a);
-                const isDigitB = /^\d/.test(b);
-
-                if (isDigitA && isDigitB) {
-                    return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
-                }
-
-                if (isDigitA && !isDigitB) return 1;
-                if (!isDigitA && isDigitB) return -1;
-
-                return a.localeCompare(b);
-            })
+            .sort((a, b) => compareSeasons(a, b))
             .map((season) => ({
                 season,
-                participants: groups[season],
+                participants: groups[season].sort((a, b) => a.name.localeCompare(b.name)),
             }));
     };
 
