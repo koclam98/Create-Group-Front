@@ -16,8 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "meetings")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 외부 생성 제한
 @AllArgsConstructor
 @Builder
 public class Meeting {
@@ -79,4 +78,16 @@ public class Meeting {
     )
     @Builder.Default
     private List<Participant> participants = new ArrayList<>();
+
+    public void updateInfo(String title, String desc, LocalDateTime date, String location) {
+        if (title != null) this.title = title;
+        if (desc != null) this.desc = desc;
+        if (date != null) this.date = date;
+        if (location != null) this.location = location;
+    }
+
+    public void replaceParticipants(List<Participant> newParticipants) {
+        this.participants.clear();
+        this.participants.addAll(newParticipants);
+    }
 }

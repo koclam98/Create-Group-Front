@@ -85,27 +85,12 @@ public class MeetingService {
     @Transactional
     public MeetingDto.Response update(String id, MeetingDto.Update dto) {
         Meeting meeting = getMeetingById(id);
+        meeting.updateInfo(dto.getTitle(), dto.getDesc(), dto.getDate() != null ? DateTimeUtil.parseIsoString(dto.getDate()) : null, dto.getLocation());
 
-        if (dto.getTitle() != null) {
-            meeting.setTitle(dto.getTitle());
-        }
-        if (dto.getDesc() != null) {
-            meeting.setDesc(dto.getDesc());
-        }
-        if (dto.getDate() != null) {
-            meeting.setDate(DateTimeUtil.parseIsoString(dto.getDate()));
-        }
-        if (dto.getLocation() != null) {
-            meeting.setLocation(dto.getLocation());
-        }
         if (dto.getParticipantIds() != null) {
-            List<Participant> participants = getParticipantsByIds(dto.getParticipantIds());
-            meeting.getParticipants().clear();
-            meeting.getParticipants().addAll(participants);
+            meeting.replaceParticipants(getParticipantsByIds(dto.getParticipantIds()));
         }
-
-        Meeting savedMeeting = meetingRepository.save(meeting);
-        return MeetingDto.Response.from(savedMeeting);
+        return MeetingDto.Response.from(meetingRepository.save(meeting));
     }
 
     /**

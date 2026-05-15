@@ -1,7 +1,11 @@
 package com.example.meeting.repository;
 
 import com.example.meeting.domain.Participant;
+import com.example.meeting.exception.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -28,4 +32,14 @@ public interface ParticipantRepository extends JpaRepository<Participant, String
      * @return 이 전화번호를 가진 참여자가 존재하면 true, 그렇지 않으면 false
      */
     boolean existsByPhone(String phone);
+
+    default Participant getById(String id) {
+        return findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("참여자를 찾을 수 없습니다."));
+    }
+
+    @Modifying
+    @Query(value = "DELETE FROM meeting_participants WHERE participant_id = :id", nativeQuery = true)
+    void removeFromAllMeetings(@Param("id") String id);
+
 }

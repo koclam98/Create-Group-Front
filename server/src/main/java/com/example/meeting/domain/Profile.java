@@ -12,8 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "profiles")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 외부 생성 제한
 @AllArgsConstructor
 @Builder
 public class Profile {
@@ -40,4 +39,8 @@ public class Profile {
     @JoinColumn(name = "participant_id", unique = true)
     @JsonIgnore
     private Participant participant;
+
+    public void changeImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

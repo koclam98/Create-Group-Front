@@ -83,20 +83,7 @@ public class ParticipantService {
     @Transactional
     public ParticipantDto.Response update(String id, ParticipantDto.Update dto) {
         Participant participant = getParticipantById(id);
-
-        if (dto.getName() != null) {
-            participant.setName(dto.getName());
-        }
-        if (dto.getPosition() != null) {
-            participant.setPosition(dto.getPosition());
-        }
-        if (dto.getSeason() != null) {
-            participant.setSeason(dto.getSeason());
-        }
-        if (dto.getPhone() != null) {
-            participant.setPhone(dto.getPhone());
-        }
-
+        participant.updateInfo(dto.getName(), dto.getPosition(), dto.getSeason(), dto.getPhone());
         return ParticipantDto.Response.from(participant);
     }
 
@@ -111,9 +98,7 @@ public class ParticipantService {
     public void delete(String id) {
         Participant participant = getParticipantById(id);
 
-        for (Meeting meeting : participant.getMeetings()) {
-            meeting.getParticipants().remove(participant);
-        }
+        participantRepository.removeFromAllMeetings(id);
 
         participantRepository.deleteById(id);
     }

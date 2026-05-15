@@ -16,8 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "participants")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // 외부 생성 제한
 @AllArgsConstructor
 @Builder
 public class Participant {
@@ -79,4 +78,11 @@ public class Participant {
      */
     @UpdateTimestamp
     private LocalDateTime updatedAt;
+
+    public void updateInfo(String name, String position, String season, String phone) {
+        if (name != null) this.name = name;
+        if (position != null) this.position = position;
+        if (season != null) this.season = season;
+        if (phone != null) this.phone = phone;
+    }
 }

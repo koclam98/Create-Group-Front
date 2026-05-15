@@ -68,7 +68,7 @@ public class ProfileService {
         Profile profile = getProfileByParticipantId(participantId);
 
         if (dto.getImageUrl() != null) {
-            profile.setImageUrl(dto.getImageUrl());
+            profile.changeImageUrl(dto.getImageUrl());
         }
 
         return ProfileDto.Response.from(profile);

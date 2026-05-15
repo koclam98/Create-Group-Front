@@ -1,7 +1,11 @@
 package com.example.meeting.repository;
 
 import com.example.meeting.domain.Meeting;
+import com.example.meeting.exception.ResourceNotFoundException;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,4 +23,13 @@ public interface MeetingRepository extends JpaRepository<Meeting, String> {
      * @return updatedAt 기준 내림차순으로 정렬된 모임 목록
      */
     List<Meeting> findAllByOrderByUpdatedAtDesc();
+
+    default Meeting getById(String id) {
+        return findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("모임을 찾을 수 없습니다."));
+    }
+
+    @Modifying
+    @Query("DELETE FROM Meeting m JOIN m.participants p WHERE p.id = :participantId")
+    void removeParticipantFromAllMeetings(@Param("participantId") String participantId);
 }
