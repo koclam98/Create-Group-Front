@@ -58,13 +58,13 @@ public class MeetingService {
      */
     @Transactional
     public MeetingDto.Response create(MeetingDto.Create dto) {
-        List<Participant> participants = getParticipantsByIds(dto.getParticipantIds());
+        List<Participant> participants = getParticipantsByIds(dto.participantIds());
 
         Meeting meeting = Meeting.builder()
-                .title(dto.getTitle())
-                .desc(dto.getDesc())
-                .date(DateTimeUtil.parseIsoString(dto.getDate()))
-                .location(dto.getLocation())
+                .title(dto.title())
+                .desc(dto.desc())
+                .date(DateTimeUtil.parseIsoString(dto.date()))
+                .location(dto.location())
                 .participants(participants)
                 .build();
 
@@ -85,10 +85,10 @@ public class MeetingService {
     @Transactional
     public MeetingDto.Response update(String id, MeetingDto.Update dto) {
         Meeting meeting = getMeetingById(id);
-        meeting.updateInfo(dto.getTitle(), dto.getDesc(), dto.getDate() != null ? DateTimeUtil.parseIsoString(dto.getDate()) : null, dto.getLocation());
+        meeting.updateInfo(dto.title(), dto.desc(), dto.date() != null ? DateTimeUtil.parseIsoString(dto.date()) : null, dto.location());
 
-        if (dto.getParticipantIds() != null) {
-            meeting.replaceParticipants(getParticipantsByIds(dto.getParticipantIds()));
+        if (dto.participantIds() != null) {
+            meeting.replaceParticipants(getParticipantsByIds(dto.participantIds()));
         }
         return MeetingDto.Response.from(meetingRepository.save(meeting));
     }

@@ -22,7 +22,7 @@ public class MeetingDto {
         @NotBlank(message = "설명은 필수입니다.") String desc,
         @NotNull(message = "일시는 필수입니다.") String date,
         @NotBlank(message = "장소는 필수입니다.") String location,
-        List<String> paricipantIds
+        List<String> participantIds
     ) {}
 
     public record Update(
@@ -38,7 +38,7 @@ public class MeetingDto {
         String title,
         String desc,
         LocalDateTime date,
-        String locaion,
+        String location,
         List<ParticipantDto.Response> participants,
         LocalDateTime createdAt,
         LocalDateTime updatedAt

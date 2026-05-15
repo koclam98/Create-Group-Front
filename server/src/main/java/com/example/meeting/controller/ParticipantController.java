@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile; 
 
 import java.util.List;
 
@@ -77,5 +78,16 @@ public class ParticipantController {
     public ResponseEntity<Void> delete(@PathVariable("id") String id) {
         participantService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * 엑셀 파일로 참여자를 일괄 등록
+     * 
+     * @param file 업로드할 엑셀 파일(.xslx)
+     * @return 등록 결과 (전체 / 성공 / 스킵 건수 + 오류 메세지)
+     */
+    @PostMapping("/import")
+    public ResponseEntity<ParticipantDto.ImportResult> importFromExcel(@RequestParam("file") MultipartFile file) {
+        return ResponseEntity.ok(participantService.importFromFile(file));
     }
 }

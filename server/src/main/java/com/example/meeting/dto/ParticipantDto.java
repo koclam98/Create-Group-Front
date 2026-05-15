@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Participant 작업을 위한 데이터 전송 객체.
@@ -149,5 +150,28 @@ public class ParticipantDto {
         }
     }
 
-    
+    /**
+     * 엑셀 import 결과를 담는 DTO.
+     * 전체 / 성공 / 스킵 건수와 행별 오류 메시지를 포함합니다.
+     */
+    @Getter
+    @Setter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ImportResult {
+
+        /** 엑셀에서 읽은 전체 데이터 행 수 (헤더 제외) */
+        private int totalCount;
+
+        /** 정상적으로 등록된 행 수 */
+        private int successCount;
+
+        /** 중복 등의 이유로 건너뛴 행 수 */
+        private int skipCount;
+
+        /** 행별 오류/스킵 메시지 목록 (예: "3행: 이미 등록된 연락처입니다") */
+        private List<String> errors;
+    }
+
 }

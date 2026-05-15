@@ -20,6 +20,14 @@ export interface Profile {
     participantId: string;
 }
 
+// 엑셀 import 결과 타입
+export interface ImportResult {
+    totalCount: number;
+    successCount: number;
+    skipCount: number;
+    errors: string[];
+}
+
 export const ParticipantService = {
     // 모든 참여자 조회
     getAll: async () => {
@@ -46,4 +54,15 @@ export const ParticipantService = {
         const response = await api.delete(`/participants/${id}`);
         return response.data;
     },
+    // 엑셀 파일로 참여자 일괄 등록
+    importExcel: async (file: File): Promise<ImportResult> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await api.post<ImportResult>('/participants/import', formData, {
+            headers: {'Content-Type': 'multipart/form-data'},
+        });
+        return response.data;
+    }
 };
+
+

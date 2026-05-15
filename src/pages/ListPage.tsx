@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Table } from '../components/ui/Table';
-import { ParticipantService, type Meeting, type Participant } from '../services/participantService';
+import { ParticipantService, type Meeting, type Participant, type ImportResult } from '../services/participantService';
 import { meetingService } from '../services/meetingService';
 import '../app/App.css';
 import '../styles/common.css';
@@ -24,6 +24,7 @@ export default function ListPage() {
     const [selectedMeetingIds, setSelectedMeetingIds] = useState<string[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const meetingNameInputRef = useRef<HTMLInputElement>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     // Alert Modal State
     const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -330,6 +331,28 @@ export default function ListPage() {
 
     const selectedParticipants = participants.filter((p) => selectedIds.includes(p.id));
 
+    // 엑셀 등록 핸들러 추가
+    const handleImportExcel = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        try {
+            const result = await ParticipantService.importExcel(file);
+            let message = `전체: ${result.totalCount}건, 성공: ${result.successCount}건, 스킵: ${result.skipCount}건`;
+            if (result.errors.length > 0) {
+                message += '\n\n' + result.errors.join('\n');
+            }
+            openAlert('엑셀 가져오기 결과', message);
+            await loadData();
+        } catch (err) {
+            console.error('Failed to import excel:', err);
+            openAlert('오류', '엑셀 가져오기에 실패했습니다.');
+        } finally {
+            // 같은 파일 재선택 가능하도록 초기화
+            e.target.value = '';
+        }
+    };
+
     return (
         <main className="main-content justify-start gap-4">
             <section className="section-container">
@@ -342,6 +365,14 @@ export default function ListPage() {
                         </button>
                     )}
                     <button onClick={() => navigate('/add')}>참여자 등록</button>
+                    <button onClick={() => fileInputRef.current?.click()}>엑셀 가져오기</button>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept=".xlsx,.csv"
+                        onChange={handleImportExcel}
+                        style={{ display: 'none' }}
+                    />
                     <button onClick={handleOpenModal}>모임 등록</button>
                 </div>
 
